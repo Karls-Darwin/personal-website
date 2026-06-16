@@ -267,6 +267,7 @@
   .toast.show { opacity: 1; transform: translateY(0); }
 
   .note { font-size: 12px; color: var(--muted); margin-top: 0.4rem; }
+  .field-hint { font-size: 11.5px; color: var(--muted); margin-top: 0.25rem; line-height: 1.4; }
 
   @media (max-width: 580px) {
     .field-group { grid-template-columns: 1fr; }
@@ -303,18 +304,22 @@
       <div class="field">
         <label>Annual ARR target ($)</label>
         <input type="number" id="p-target" value="1200000" oninput="calcPipeline()">
+        <span class="field-hint">Your full-year new ARR goal.</span>
       </div>
       <div class="field">
         <label>Months elapsed (YTD)</label>
         <input type="number" id="p-months" value="7" min="1" max="12" oninput="calcPipeline()">
+        <span class="field-hint">How many months into the fiscal year you are (e.g. 7 = end of July).</span>
       </div>
       <div class="field">
         <label>ARR closed to date ($)</label>
         <input type="number" id="p-closed" value="612000" oninput="calcPipeline()">
+        <span class="field-hint">New ARR actually closed and booked so far this year.</span>
       </div>
       <div class="field">
         <label>Required pipeline coverage ratio</label>
         <input type="number" id="p-coverage" value="3.5" step="0.1" oninput="calcPipeline()">
+        <span class="field-hint">How many $ of pipeline you need per $ of remaining target. Industry standard is 3–4x.</span>
       </div>
     </div>
 
@@ -412,18 +417,22 @@
       <div class="field">
         <label>Starting ARR ($)</label>
         <input type="number" id="ret-start" value="528000" oninput="calcRetention()">
+        <span class="field-hint">Total ARR from existing customers at the start of the period.</span>
       </div>
       <div class="field">
         <label>Churn ARR ($)</label>
         <input type="number" id="ret-churn" value="42000" oninput="calcRetention()">
+        <span class="field-hint">ARR lost from customers who cancelled entirely.</span>
       </div>
       <div class="field">
         <label>Contraction ARR ($)</label>
         <input type="number" id="ret-contraction" value="18000" oninput="calcRetention()">
+        <span class="field-hint">ARR lost from customers who downgraded but stayed.</span>
       </div>
       <div class="field">
         <label>Expansion ARR ($)</label>
         <input type="number" id="ret-expansion" value="36000" oninput="calcRetention()">
+        <span class="field-hint">ARR gained from existing customers via upsells, cross-sells, or seat growth.</span>
       </div>
     </div>
 
@@ -432,10 +441,12 @@
       <div class="field">
         <label>Annual ARR target ($)</label>
         <input type="number" id="ret-target" value="1200000" oninput="calcRetention()">
+        <span class="field-hint">Your full-year ARR goal including both new and retained revenue.</span>
       </div>
       <div class="field">
         <label>New logo ARR (forecast) ($)</label>
         <input type="number" id="ret-newlogo" value="320000" oninput="calcRetention()">
+        <span class="field-hint">Expected ARR from brand new customers this period (not expansions).</span>
       </div>
     </div>
 
@@ -489,26 +500,32 @@
       <div class="field">
         <label>Opening ARR ($)</label>
         <input type="number" id="b-opening" value="528000" oninput="calcBridge()">
+        <span class="field-hint">Total ARR at the start of the period, before any changes.</span>
       </div>
       <div class="field">
         <label>Annual target ($)</label>
         <input type="number" id="b-target" value="1200000" oninput="calcBridge()">
+        <span class="field-hint">The ending ARR you're trying to reach by year end.</span>
       </div>
       <div class="field">
         <label>New logo ARR ($)</label>
         <input type="number" id="b-newlogo" value="320000" oninput="calcBridge()">
+        <span class="field-hint">ARR from brand new customers acquired this period.</span>
       </div>
       <div class="field">
         <label>Expansion ARR ($)</label>
         <input type="number" id="b-expansion" value="36000" oninput="calcBridge()">
+        <span class="field-hint">Additional ARR from existing customers (upsells, seat growth, add-ons).</span>
       </div>
       <div class="field">
         <label>Churn ARR ($)</label>
         <input type="number" id="b-churn" value="42000" oninput="calcBridge()">
+        <span class="field-hint">ARR lost from customers who cancelled entirely. Enter as a positive number.</span>
       </div>
       <div class="field">
         <label>Contraction ARR ($)</label>
         <input type="number" id="b-contraction" value="18000" oninput="calcBridge()">
+        <span class="field-hint">ARR lost from customers who downgraded but didn't cancel. Enter as a positive number.</span>
       </div>
     </div>
 
