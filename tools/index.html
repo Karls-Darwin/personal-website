@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>RevOps Calculator | Karl Krecke</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --text: #111111;
+    --muted: #666666;
+    --light: #f5f5f5;
+    --border: #dddddd;
+    --accent: #1a56db;
+    --accent-light: #e8f0fe;
+    --green: #1a7a4a;
+    --green-light: #e6f4ed;
+    --red: #c0392b;
+    --red-light: #fdecea;
+    --yellow: #7a5c00;
+    --yellow-light: #fef9e7;
+    --mono: 'Courier New', Courier, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 0 1rem;
+  }
+
+  /* Nav — matches karlkrecke.com exactly */
+  nav {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+  }
+  nav a {
+    color: var(--text);
+    text-decoration: none;
+    margin-right: 1.25rem;
+    font-size: 14px;
+  }
+  nav a:hover { text-decoration: underline; }
+
+  .page-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding-bottom: 4rem;
+  }
+
+  h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.4rem; }
+  h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+  h3 { font-size: 0.95rem; font-weight: 600; margin: 1.25rem 0 0.5rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-size: 11px; }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 2rem;
+  }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  .tab {
+    padding: 0.6rem 1.1rem;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    font-family: var(--sans);
+    transition: color 0.15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); border-bottom-color: var(--text); font-weight: 600; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Form elements */
+  .field-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .field-group.three { grid-template-columns: 1fr 1fr 1fr; }
+  .field-group.single { grid-template-columns: 1fr; }
+
+  .field { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  input[type="number"], input[type="text"], select {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.45rem 0.6rem;
+    font-size: 14px;
+    font-family: var(--mono);
+    color: var(--text);
+    background: var(--bg);
+    width: 100%;
+    -moz-appearance: textfield;
+  }
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+  input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+
+  /* Pipeline rows */
+  .pipeline-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 14px; }
+  .pipeline-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .pipeline-table td { padding: 0.35rem 0.5rem; vertical-align: middle; }
+  .pipeline-table tr:nth-child(even) td { background: var(--light); }
+  .pipeline-table input { border: 1px solid var(--border); padding: 0.3rem 0.5rem; font-family: var(--mono); font-size: 13px; width: 100%; border-radius: 3px; }
+  .pipeline-table .calc-cell { font-family: var(--mono); font-size: 13px; color: var(--accent); text-align: right; }
+
+  /* Results */
+  .results {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .results-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .metric-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+
+  .metric-value {
+    font-family: var(--mono);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .metric-value.good { color: var(--green); }
+  .metric-value.warn { color: var(--yellow); }
+  .metric-value.bad { color: var(--red); }
+
+  .metric-sub {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .insight {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .insight.good { background: var(--green-light); color: var(--green); }
+  .insight.warn { background: var(--yellow-light); color: var(--yellow); }
+  .insight.bad { background: var(--red-light); color: var(--red); }
+  .insight.neutral { background: var(--accent-light); color: var(--accent); }
+
+  /* Revenue bridge */
+  .bridge-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 0.5rem; }
+  .bridge-table td { padding: 0.4rem 0.5rem; font-family: var(--mono); }
+  .bridge-table .label-col { font-family: var(--sans); color: var(--muted); font-size: 13px; }
+  .bridge-table .value-col { text-align: right; font-weight: 600; }
+  .bridge-table .positive { color: var(--green); }
+  .bridge-table .negative { color: var(--red); }
+  .bridge-table .total-row td { border-top: 1px solid var(--border); font-weight: 700; padding-top: 0.6rem; margin-top: 0.25rem; }
+  .bridge-table .divider-row td { border-top: 1px solid var(--border); }
+
+  /* Buttons */
+  .btn-row { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+
+  button.primary {
+    background: var(--text);
+    color: white;
+    border: none;
+    padding: 0.55rem 1.2rem;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: var(--sans);
+    cursor: pointer;
+    font-weight: 500;
+  }
+  button.primary:hover { background: #333; }
+
+  button.secondary {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.55rem 1.2rem;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: var(--sans);
+    cursor: pointer;
+  }
+  button.secondary:hover { background: var(--light); }
+
+  /* Copy success toast */
+  .toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--text);
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    font-size: 13px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.2s;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  .note { font-size: 12px; color: var(--muted); margin-top: 0.4rem; }
+
+  @media (max-width: 580px) {
+    .field-group { grid-template-columns: 1fr; }
+    .field-group.three { grid-template-columns: 1fr 1fr; }
+    .metrics-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <nav>
+    <a href="https://karlkrecke.com/">Home</a>
+    <a href="https://karlkrecke.com/projects">Projects</a>
+  </nav>
+
+  <h1>RevOps Calculator</h1>
+  <p class="subtitle">Three models for pipeline forecasting, retention analysis, and revenue planning. Enter your numbers and get instant output.</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('pipeline', this)">Pipeline Forecast</button>
+    <button class="tab" onclick="switchTab('retention', this)">Retention & NRR</button>
+    <button class="tab" onclick="switchTab('bridge', this)">Revenue Bridge</button>
+  </div>
+
+  <!-- ==================== TAB 1: PIPELINE ==================== -->
+  <div class="tab-panel active" id="tab-pipeline">
+
+    <h2>Pipeline forecast</h2>
+
+    <h3>Targets & assumptions</h3>
+    <div class="field-group">
+      <div class="field">
+        <label>Annual ARR target ($)</label>
+        <input type="number" id="p-target" value="1200000" oninput="calcPipeline()">
+      </div>
+      <div class="field">
+        <label>Months elapsed (YTD)</label>
+        <input type="number" id="p-months" value="7" min="1" max="12" oninput="calcPipeline()">
+      </div>
+      <div class="field">
+        <label>ARR closed to date ($)</label>
+        <input type="number" id="p-closed" value="612000" oninput="calcPipeline()">
+      </div>
+      <div class="field">
+        <label>Required pipeline coverage ratio</label>
+        <input type="number" id="p-coverage" value="3.5" step="0.1" oninput="calcPipeline()">
+      </div>
+    </div>
+
+    <h3>Pipeline by stage</h3>
+    <p class="note">Enter the total value and estimated close rate for each active pipeline stage.</p>
+    <br>
+    <table class="pipeline-table" id="pipeline-table">
+      <thead>
+        <tr>
+          <th style="width:30%">Stage</th>
+          <th style="width:25%">Pipeline value ($)</th>
+          <th style="width:20%">Close rate (%)</th>
+          <th style="width:25%">Weighted value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="text" value="Qualified" oninput="calcPipeline()"></td>
+          <td><input type="number" value="288000" oninput="calcPipeline()"></td>
+          <td><input type="number" value="10" oninput="calcPipeline()"></td>
+          <td class="calc-cell" id="w0">—</td>
+        </tr>
+        <tr>
+          <td><input type="text" value="Discovery" oninput="calcPipeline()"></td>
+          <td><input type="number" value="192000" oninput="calcPipeline()"></td>
+          <td><input type="number" value="25" oninput="calcPipeline()"></td>
+          <td class="calc-cell" id="w1">—</td>
+        </tr>
+        <tr>
+          <td><input type="text" value="Proposal Sent" oninput="calcPipeline()"></td>
+          <td><input type="number" value="144000" oninput="calcPipeline()"></td>
+          <td><input type="number" value="50" oninput="calcPipeline()"></td>
+          <td class="calc-cell" id="w2">—</td>
+        </tr>
+        <tr>
+          <td><input type="text" value="Negotiation" oninput="calcPipeline()"></td>
+          <td><input type="number" value="96000" oninput="calcPipeline()"></td>
+          <td><input type="number" value="75" oninput="calcPipeline()"></td>
+          <td class="calc-cell" id="w3">—</td>
+        </tr>
+        <tr>
+          <td><input type="text" value="Contract Sent" oninput="calcPipeline()"></td>
+          <td><input type="number" value="72000" oninput="calcPipeline()"></td>
+          <td><input type="number" value="90" oninput="calcPipeline()"></td>
+          <td class="calc-cell" id="w4">—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="results" id="pipeline-results">
+      <div class="results-title">Output</div>
+      <div class="metrics-grid">
+        <div class="metric">
+          <div class="metric-label">Weighted pipeline</div>
+          <div class="metric-value" id="r-weighted">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Coverage ratio</div>
+          <div class="metric-value" id="r-coverageratio">—</div>
+          <div class="metric-sub" id="r-coveragestatus"></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">ARR gap to target</div>
+          <div class="metric-value" id="r-gap">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Pro-rata target (YTD)</div>
+          <div class="metric-value" id="r-prorata">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Pacing vs target</div>
+          <div class="metric-value" id="r-pacing">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Monthly run rate needed</div>
+          <div class="metric-value" id="r-runrate">—</div>
+        </div>
+      </div>
+      <div class="insight neutral" id="pipeline-insight">Fill in your numbers above to see analysis.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="secondary" onclick="copyResults('pipeline')">Copy results</button>
+      <button class="secondary" onclick="resetTab('pipeline')">Reset</button>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 2: RETENTION ==================== -->
+  <div class="tab-panel" id="tab-retention">
+
+    <h2>Retention & NRR</h2>
+
+    <h3>Starting ARR & retention inputs</h3>
+    <div class="field-group">
+      <div class="field">
+        <label>Starting ARR ($)</label>
+        <input type="number" id="ret-start" value="528000" oninput="calcRetention()">
+      </div>
+      <div class="field">
+        <label>Churn ARR ($)</label>
+        <input type="number" id="ret-churn" value="42000" oninput="calcRetention()">
+      </div>
+      <div class="field">
+        <label>Contraction ARR ($)</label>
+        <input type="number" id="ret-contraction" value="18000" oninput="calcRetention()">
+      </div>
+      <div class="field">
+        <label>Expansion ARR ($)</label>
+        <input type="number" id="ret-expansion" value="36000" oninput="calcRetention()">
+      </div>
+    </div>
+
+    <h3>Planning inputs</h3>
+    <div class="field-group">
+      <div class="field">
+        <label>Annual ARR target ($)</label>
+        <input type="number" id="ret-target" value="1200000" oninput="calcRetention()">
+      </div>
+      <div class="field">
+        <label>New logo ARR (forecast) ($)</label>
+        <input type="number" id="ret-newlogo" value="320000" oninput="calcRetention()">
+      </div>
+    </div>
+
+    <div class="results" id="retention-results">
+      <div class="results-title">Output</div>
+      <div class="metrics-grid">
+        <div class="metric">
+          <div class="metric-label">Gross Revenue Retention</div>
+          <div class="metric-value" id="r-grr">—</div>
+          <div class="metric-sub">excl. expansion</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Net Revenue Retention</div>
+          <div class="metric-value" id="r-nrr">—</div>
+          <div class="metric-sub">incl. expansion</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Ending ARR (retained base)</div>
+          <div class="metric-value" id="r-ending">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Projected ARR (w/ new logo)</div>
+          <div class="metric-value" id="r-projected">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Gap to target</div>
+          <div class="metric-value" id="r-retgap">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Additional new ARR needed</div>
+          <div class="metric-value" id="r-addlneeded">—</div>
+        </div>
+      </div>
+      <div class="insight neutral" id="retention-insight">Fill in your numbers above to see analysis.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="secondary" onclick="copyResults('retention')">Copy results</button>
+      <button class="secondary" onclick="resetTab('retention')">Reset</button>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 3: REVENUE BRIDGE ==================== -->
+  <div class="tab-panel" id="tab-bridge">
+
+    <h2>Revenue bridge</h2>
+    <p class="note" style="font-size:13px; color: var(--muted); margin-bottom: 1.25rem;">Shows how you get from opening ARR to ending ARR. The standard executive view in SaaS RevOps.</p>
+
+    <h3>Inputs</h3>
+    <div class="field-group">
+      <div class="field">
+        <label>Opening ARR ($)</label>
+        <input type="number" id="b-opening" value="528000" oninput="calcBridge()">
+      </div>
+      <div class="field">
+        <label>Annual target ($)</label>
+        <input type="number" id="b-target" value="1200000" oninput="calcBridge()">
+      </div>
+      <div class="field">
+        <label>New logo ARR ($)</label>
+        <input type="number" id="b-newlogo" value="320000" oninput="calcBridge()">
+      </div>
+      <div class="field">
+        <label>Expansion ARR ($)</label>
+        <input type="number" id="b-expansion" value="36000" oninput="calcBridge()">
+      </div>
+      <div class="field">
+        <label>Churn ARR ($)</label>
+        <input type="number" id="b-churn" value="42000" oninput="calcBridge()">
+      </div>
+      <div class="field">
+        <label>Contraction ARR ($)</label>
+        <input type="number" id="b-contraction" value="18000" oninput="calcBridge()">
+      </div>
+    </div>
+
+    <div class="results" id="bridge-results">
+      <div class="results-title">Revenue bridge</div>
+      <table class="bridge-table" id="bridge-output">
+        <tr><td class="label-col">Opening ARR</td><td class="value-col" id="br-opening">—</td></tr>
+        <tr><td class="label-col">+ New logo ARR</td><td class="value-col positive" id="br-newlogo">—</td></tr>
+        <tr><td class="label-col">+ Expansion ARR</td><td class="value-col positive" id="br-expansion">—</td></tr>
+        <tr><td class="label-col">– Churn ARR</td><td class="value-col negative" id="br-churn">—</td></tr>
+        <tr><td class="label-col">– Contraction ARR</td><td class="value-col negative" id="br-contraction">—</td></tr>
+        <tr class="total-row"><td class="label-col" style="font-family: var(--sans); color: var(--text); font-weight: 600">Ending ARR</td><td class="value-col" id="br-ending">—</td></tr>
+        <tr class="divider-row">
+          <td class="label-col" style="font-family: var(--sans); color: var(--muted); font-size: 13px; padding-top: 0.75rem">Annual target</td>
+          <td class="value-col" id="br-target" style="padding-top: 0.75rem">—</td>
+        </tr>
+        <tr>
+          <td class="label-col" style="font-family: var(--sans); color: var(--muted); font-size: 13px;">Gap to target</td>
+          <td class="value-col" id="br-gap">—</td>
+        </tr>
+      </table>
+      <div class="insight neutral" style="margin-top: 1rem" id="bridge-insight">Fill in your numbers above to see analysis.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="secondary" onclick="copyResults('bridge')">Copy results</button>
+      <button class="secondary" onclick="resetTab('bridge')">Reset</button>
+    </div>
+  </div>
+
+  <hr>
+  <p style="font-size: 13px; color: var(--muted)">Built by <a href="https://karlkrecke.com" style="color: var(--text)">Karl Krecke</a>. Inputs stay in your browser and are never stored.</p>
+
+</div>
+
+<div class="toast" id="toast">Results copied to clipboard</div>
+
+<script>
+  // ─── Utilities ───────────────────────────────────────────────────────────────
+  const fmt = (n) => n < 0
+    ? '-$' + Math.abs(Math.round(n)).toLocaleString()
+    : '$' + Math.round(n).toLocaleString();
+
+  const pct = (n) => (n * 100).toFixed(1) + '%';
+
+  const v = (id) => parseFloat(document.getElementById(id).value) || 0;
+
+  function setMetric(id, value, cls) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = value;
+    el.className = 'metric-value' + (cls ? ' ' + cls : '');
+  }
+
+  function setInsight(id, text, cls) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'insight ' + cls;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ─── Tab switching ────────────────────────────────────────────────────────────
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ─── Pipeline calculator ──────────────────────────────────────────────────────
+  function calcPipeline() {
+    const target = v('p-target');
+    const months = v('p-months');
+    const closed = v('p-closed');
+    const coverageReq = v('p-coverage');
+
+    const rows = document.querySelectorAll('#pipeline-table tbody tr');
+    let totalWeighted = 0;
+    let totalPipeline = 0;
+
+    rows.forEach((row, i) => {
+      const inputs = row.querySelectorAll('input[type="number"]');
+      const pipeVal = parseFloat(inputs[0].value) || 0;
+      const closeRate = parseFloat(inputs[1].value) || 0;
+      const weighted = pipeVal * (closeRate / 100);
+      totalWeighted += weighted;
+      totalPipeline += pipeVal;
+      const cell = document.getElementById('w' + i);
+      if (cell) cell.textContent = fmt(weighted);
+    });
+
+    const proRata = (months / 12) * target;
+    const pacingPct = proRata > 0 ? closed / proRata : 0;
+    const gap = closed - proRata;
+    const remaining = target - closed;
+    const monthsLeft = 12 - months;
+    const runRate = monthsLeft > 0 ? remaining / monthsLeft : 0;
+    const coverageRatio = runRate > 0 ? totalWeighted / runRate : 0;
+
+    setMetric('r-weighted', fmt(totalWeighted));
+    setMetric('r-prorata', fmt(proRata));
+    setMetric('r-gap', fmt(gap), gap >= 0 ? 'good' : 'bad');
+    setMetric('r-runrate', fmt(runRate));
+
+    const coverageColor = coverageRatio >= coverageReq ? 'good' : coverageRatio >= coverageReq * 0.75 ? 'warn' : 'bad';
+    setMetric('r-coverageratio', coverageRatio.toFixed(1) + 'x', coverageColor);
+    document.getElementById('r-coveragestatus').textContent = coverageRatio >= coverageReq ? '✓ sufficient' : '⚠ below target';
+
+    const pacingColor = pacingPct >= 1 ? 'good' : pacingPct >= 0.85 ? 'warn' : 'bad';
+    setMetric('r-pacing', pct(pacingPct), pacingColor);
+
+    // Insight
+    if (coverageRatio >= coverageReq && pacingPct >= 1) {
+      setInsight('pipeline-insight', `Pipeline coverage is ${coverageRatio.toFixed(1)}x and you're pacing ${pct(pacingPct)} to YTD target. On track.`, 'good');
+    } else if (coverageRatio < coverageReq && pacingPct >= 1) {
+      const needed = runRate * coverageReq;
+      setInsight('pipeline-insight', `YTD pacing is healthy but pipeline coverage is ${coverageRatio.toFixed(1)}x vs. your ${coverageReq}x target. You need ${fmt(needed)} in weighted pipeline to cover the remaining ${fmt(remaining)} ARR needed.`, 'warn');
+    } else if (coverageRatio >= coverageReq && pacingPct < 1) {
+      setInsight('pipeline-insight', `Pipeline coverage looks sufficient at ${coverageRatio.toFixed(1)}x, but YTD pacing is ${pct(pacingPct)}. Execution speed is the risk — focus on moving existing deals, not adding pipeline.`, 'warn');
+    } else {
+      const dealsNeeded = runRate > 0 ? Math.ceil(remaining / (totalPipeline / Math.max(rows.length, 1))) : 0;
+      setInsight('pipeline-insight', `Pipeline is undercovered at ${coverageRatio.toFixed(1)}x and YTD pacing is ${pct(pacingPct)}. You need ${fmt(runRate)}/month for the rest of the year and ${fmt(runRate * coverageReq)} in weighted pipeline to support that.`, 'bad');
+    }
+  }
+
+  // ─── Retention calculator ─────────────────────────────────────────────────────
+  function calcRetention() {
+    const start = v('ret-start');
+    const churn = v('ret-churn');
+    const contraction = v('ret-contraction');
+    const expansion = v('ret-expansion');
+    const target = v('ret-target');
+    const newLogo = v('ret-newlogo');
+
+    const grr = start > 0 ? (start - churn - contraction) / start : 0;
+    const nrr = start > 0 ? (start - churn - contraction + expansion) / start : 0;
+    const endingRetained = start - churn - contraction + expansion;
+    const projected = endingRetained + newLogo;
+    const gap = projected - target;
+    const addlNeeded = Math.max(0, target - projected);
+
+    const grrColor = grr >= 0.9 ? 'good' : grr >= 0.8 ? 'warn' : 'bad';
+    const nrrColor = nrr >= 1.0 ? 'good' : nrr >= 0.9 ? 'warn' : 'bad';
+
+    setMetric('r-grr', pct(grr), grrColor);
+    setMetric('r-nrr', pct(nrr), nrrColor);
+    setMetric('r-ending', fmt(endingRetained));
+    setMetric('r-projected', fmt(projected), projected >= target ? 'good' : 'warn');
+    setMetric('r-retgap', fmt(gap), gap >= 0 ? 'good' : 'bad');
+    setMetric('r-addlneeded', addlNeeded > 0 ? fmt(addlNeeded) : '—', addlNeeded > 0 ? 'bad' : 'good');
+
+    // Insight
+    if (nrr >= 1.0 && projected >= target) {
+      setInsight('retention-insight', `NRR of ${pct(nrr)} means your existing base is growing on its own. Combined with ${fmt(newLogo)} in projected new logo ARR, you're on track to hit target with ${fmt(gap)} to spare.`, 'good');
+    } else if (nrr >= 1.0 && projected < target) {
+      setInsight('retention-insight', `NRR is healthy at ${pct(nrr)}, but you need ${fmt(addlNeeded)} more in new logo ARR to hit your target. Retention isn't the problem — new pipeline is.`, 'warn');
+    } else if (nrr < 0.9) {
+      setInsight('retention-insight', `NRR of ${pct(nrr)} is a red flag. You're losing more ARR than expansion can offset — which means new sales has to run harder just to stay flat. Retention needs attention before scaling acquisition.`, 'bad');
+    } else {
+      setInsight('retention-insight', `NRR of ${pct(nrr)} is below 100% but not critical. Your base is contracting slightly, so new logo ARR needs to cover both the gap and hit the target. You need ${fmt(addlNeeded)} more.`, 'warn');
+    }
+  }
+
+  // ─── Bridge calculator ────────────────────────────────────────────────────────
+  function calcBridge() {
+    const opening = v('b-opening');
+    const target = v('b-target');
+    const newLogo = v('b-newlogo');
+    const expansion = v('b-expansion');
+    const churn = v('b-churn');
+    const contraction = v('b-contraction');
+
+    const ending = opening + newLogo + expansion - churn - contraction;
+    const gap = ending - target;
+
+    document.getElementById('br-opening').textContent = fmt(opening);
+    document.getElementById('br-newlogo').textContent = '+' + fmt(newLogo);
+    document.getElementById('br-expansion').textContent = '+' + fmt(expansion);
+    document.getElementById('br-churn').textContent = '-' + fmt(churn);
+    document.getElementById('br-contraction').textContent = '-' + fmt(contraction);
+    document.getElementById('br-target').textContent = fmt(target);
+
+    const endEl = document.getElementById('br-ending');
+    endEl.textContent = fmt(ending);
+    endEl.className = 'value-col ' + (ending >= target ? 'positive' : 'negative');
+
+    const gapEl = document.getElementById('br-gap');
+    gapEl.textContent = (gap >= 0 ? '+' : '') + fmt(gap);
+    gapEl.className = 'value-col ' + (gap >= 0 ? 'positive' : 'negative');
+
+    const retainedBase = opening + expansion - churn - contraction;
+    const nrr = opening > 0 ? retainedBase / opening : 0;
+
+    if (ending >= target) {
+      setInsight('bridge-insight', `Projected ending ARR of ${fmt(ending)} exceeds your ${fmt(target)} target by ${fmt(gap)}. NRR from your existing base is ${pct(nrr)}.`, 'good');
+    } else {
+      setInsight('bridge-insight', `You're ${fmt(Math.abs(gap))} short of your ${fmt(target)} target. Either increase new logo or expansion ARR, or reduce churn and contraction to close the gap.`, 'bad');
+    }
+  }
+
+  // ─── Copy results ─────────────────────────────────────────────────────────────
+  function copyResults(tab) {
+    let text = '';
+
+    if (tab === 'pipeline') {
+      text = [
+        'PIPELINE FORECAST RESULTS',
+        '─────────────────────────',
+        'Weighted pipeline:     ' + document.getElementById('r-weighted').textContent,
+        'Coverage ratio:        ' + document.getElementById('r-coverageratio').textContent,
+        'ARR gap (YTD):         ' + document.getElementById('r-gap').textContent,
+        'Pro-rata YTD target:   ' + document.getElementById('r-prorata').textContent,
+        'Pacing vs target:      ' + document.getElementById('r-pacing').textContent,
+        'Monthly run rate needed: ' + document.getElementById('r-runrate').textContent,
+        '',
+        'Analysis: ' + document.getElementById('pipeline-insight').textContent,
+      ].join('\n');
+    } else if (tab === 'retention') {
+      text = [
+        'RETENTION & NRR RESULTS',
+        '───────────────────────',
+        'GRR:                   ' + document.getElementById('r-grr').textContent,
+        'NRR:                   ' + document.getElementById('r-nrr').textContent,
+        'Ending ARR (retained): ' + document.getElementById('r-ending').textContent,
+        'Projected ARR (total): ' + document.getElementById('r-projected').textContent,
+        'Gap to target:         ' + document.getElementById('r-retgap').textContent,
+        'Additional ARR needed: ' + document.getElementById('r-addlneeded').textContent,
+        '',
+        'Analysis: ' + document.getElementById('retention-insight').textContent,
+      ].join('\n');
+    } else if (tab === 'bridge') {
+      text = [
+        'REVENUE BRIDGE',
+        '──────────────',
+        'Opening ARR:     ' + document.getElementById('br-opening').textContent,
+        '+ New logo ARR:  ' + document.getElementById('br-newlogo').textContent,
+        '+ Expansion ARR: ' + document.getElementById('br-expansion').textContent,
+        '– Churn ARR:     ' + document.getElementById('br-churn').textContent,
+        '– Contraction:   ' + document.getElementById('br-contraction').textContent,
+        '= Ending ARR:    ' + document.getElementById('br-ending').textContent,
+        '',
+        'Annual target:   ' + document.getElementById('br-target').textContent,
+        'Gap to target:   ' + document.getElementById('br-gap').textContent,
+        '',
+        'Analysis: ' + document.getElementById('bridge-insight').textContent,
+      ].join('\n');
+    }
+
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Results copied to clipboard');
+    }).catch(() => {
+      showToast('Copy failed — try selecting manually');
+    });
+  }
+
+  // ─── Reset ────────────────────────────────────────────────────────────────────
+  const defaults = {
+    pipeline: { 'p-target': 1200000, 'p-months': 7, 'p-closed': 612000, 'p-coverage': 3.5 },
+    retention: { 'ret-start': 528000, 'ret-churn': 42000, 'ret-contraction': 18000, 'ret-expansion': 36000, 'ret-target': 1200000, 'ret-newlogo': 320000 },
+    bridge: { 'b-opening': 528000, 'b-target': 1200000, 'b-newlogo': 320000, 'b-expansion': 36000, 'b-churn': 42000, 'b-contraction': 18000 }
+  };
+
+  function resetTab(tab) {
+    const d = defaults[tab];
+    Object.entries(d).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val;
+    });
+    if (tab === 'pipeline') calcPipeline();
+    if (tab === 'retention') calcRetention();
+    if (tab === 'bridge') calcBridge();
+  }
+
+  // ─── Init ─────────────────────────────────────────────────────────────────────
+  calcPipeline();
+  calcRetention();
+  calcBridge();
+</script>
+</body>
+</html>
