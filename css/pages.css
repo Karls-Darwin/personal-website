@@ -165,6 +165,7 @@
 .fave .fave-note { color: var(--color-text-muted); font-size: var(--text-sm); margin-top: 0.35rem; }
 
 /* About: colleague recommendations */
+#colleagues { scroll-margin-top: 90px; }
 .recs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-5); }
 .rec-card { display: flex; flex-direction: column; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-sm); }
 .rec-card .rec-mark { font-family: var(--font-display); font-size: 2.6rem; line-height: 1; color: var(--color-primary); opacity: 0.55; margin-bottom: var(--space-2); }
