@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work · Karl Krecke</title>
+<meta name="description" content="RevOps case studies by Karl Krecke: lead source attribution redesign, subscription renewal tracking, and referral partner payout reporting, with the metrics that mattered.">
+<link rel="canonical" href="https://karlkrecke.com/work/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Work · Karl Krecke">
+<meta property="og:description" content="RevOps case studies: attribution redesign, renewal tracking, referral payout reporting.">
+<meta property="og:url" content="https://karlkrecke.com/work/">
+<meta property="og:image" content="https://karlkrecke.com/assets/img/hero-network.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<script>(function(){try{var s=window['local'+'Storage'];var t=s&&s.getItem('kk-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<!-- Vercel Web Analytics -->
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<!-- PostHog -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only' });
+</script>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,500&f[]=general-sans@400,500,600&f[]=space-mono@400,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-page="work">
+
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow" data-reveal>Case studies</span>
+      <h1 data-reveal data-delay="1">Some of my work</h1>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: var(--space-8)">
+    <div class="wrap">
+
+      <!-- CASE 1 -->
+      <article class="case" data-reveal>
+        <div class="case-head" data-num="01">
+          <div class="chip-row" style="margin-bottom: var(--space-4)">
+            <span class="chip chip-teal">Attribution</span>
+            <span class="chip">Revenue visibility</span>
+          </div>
+          <h2>Lead source attribution &amp; revenue visibility redesign</h2>
+          <p class="case-sub">A lead-source attribution framework that unified CRM, website, campaign, and warehouse data into one reporting model marketing and revenue leaders could actually trust.</p>
+        </div>
+        <div class="case-body">
+          <div class="case-main">
+            <div class="case-block">
+              <h4>The problem</h4>
+              <p style="color: var(--color-text-muted); font-size: var(--text-sm); line-height: 1.6;">Only about a fifth of pipeline had reliable source attribution. Leaders were making channel-investment decisions on data that was mostly guesswork.</p>
+            </div>
+            <div class="case-block">
+              <h4>What I built</h4>
+              <ul class="case-list">
+                <li>A custom lead-source model in HubSpot using workflow logic across 10+ native and custom fields.</li>
+                <li>Unified data pipelines with SQL, Metabase, and Hightouch joining HubSpot and warehouse data to validate and enrich attribution, exposing true channel performance.</li>
+                <li>Dashboards for channel performance, marketing-sourced pipeline, campaign influence, conversion trends, and revenue impact.</li>
+              </ul>
+            </div>
+          </div>
+          <aside class="case-aside">
+            <div class="case-result">
+              <span class="r-num">20% → 75%+</span>
+              <span class="r-cap">attribution visibility, helping marketing and revenue leaders make better investment calls.</span>
+            </div>
+            <div class="case-tools">
+              <h4 style="font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; font-size: var(--text-xs); color: var(--color-primary);">Tools</h4>
+              <div class="chip-row">
+                <span class="chip">HubSpot</span><span class="chip">SQL</span><span class="chip">Metabase</span><span class="chip">Hightouch</span><span class="chip">Data warehouse</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </article>
+
+      <!-- CASE 2 -->
+      <article class="case" data-reveal>
+        <div class="case-head" data-num="02">
+          <div class="chip-row" style="margin-bottom: var(--space-4)">
+            <span class="chip chip-teal">Renewals</span>
+            <span class="chip">Billing</span>
+          </div>
+          <h2>Subscription renewal tracking &amp; billing visibility</h2>
+          <p class="case-sub">A SQL-based renewal tracking system giving revenue and client-facing teams accurate visibility into upcoming renewals across non-annual billing cadences tied to annual commitments.</p>
+        </div>
+        <div class="case-body">
+          <div class="case-main">
+            <div class="case-block">
+              <h4>The problem</h4>
+              <p style="color: var(--color-text-muted); font-size: var(--text-sm); line-height: 1.6;">Annual commitments billed monthly or quarterly were nearly impossible to track in HubSpot. Account managers were guessing at renewal dates.</p>
+            </div>
+            <div class="case-block">
+              <h4>What I built</h4>
+              <ul class="case-list">
+                <li>Reconciled Stripe billing, internal DB records, and warehouse data in Metabase to pin down accurate renewal dates across monthly and quarterly cadences.</li>
+                <li>Closed the HubSpot visibility gap where annual commitments on non-annual billing were hard to track.</li>
+                <li>A filterable BI dashboard: each AM can view accounts by renewal date, days to renewal, billing cadence, and commitment status, with color-coded flags for upcoming and overdue items.</li>
+                <li>A reliable source of truth spanning AM, CS, Finance, Sales, and leadership.</li>
+              </ul>
+            </div>
+          </div>
+          <aside class="case-aside">
+            <div class="case-result">
+              <span class="r-num">80% fewer</span>
+              <span class="r-cap">missed renewal conversations, and 5–10 hours a week saved per CRM, with $500K+ ARR in commitments made visible across 80 accounts.</span>
+            </div>
+            <div class="case-tools">
+              <h4 style="font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; font-size: var(--text-xs); color: var(--color-primary);">Tools</h4>
+              <div class="chip-row">
+                <span class="chip">SQL</span><span class="chip">Metabase</span><span class="chip">Stripe</span><span class="chip">HubSpot</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </article>
+
+      <!-- CASE 3 -->
+      <article class="case" data-reveal>
+        <div class="case-head" data-num="03">
+          <div class="chip-row" style="margin-bottom: var(--space-4)">
+            <span class="chip chip-teal">Partnerships</span>
+            <span class="chip">Payouts</span>
+          </div>
+          <h2>Referral partner attribution &amp; payout reporting</h2>
+          <p class="case-sub">A referral-partner attribution and payout system connecting partner UTMs, coupon codes, revenue, refunds, and payout calculations into a single reliable source of truth.</p>
+        </div>
+        <div class="case-body">
+          <div class="case-main">
+            <div class="case-block">
+              <h4>What I built</h4>
+              <ul class="case-list">
+                <li>Launched the referral-partner coupon tracking initiative, organizing partner-specific UTM and coupon mappings in Google Sheets feeding Fivetran and Metabase.</li>
+                <li>SQL in Metabase to track referral volume, attributed revenue, refunds, refund-adjusted revenue, and payout amounts.</li>
+                <li>A ClickUp process for the full partner lifecycle: vetting and scoring, exec sign-off, onboarding, marketing assets, contracts, check-ins, payout cadence, and offboarding.</li>
+                <li>Cleaner ways for Marketing, Finance, and Revenue to measure partner performance, calculate payouts, and scale partnerships.</li>
+              </ul>
+            </div>
+          </div>
+          <aside class="case-aside">
+            <div class="case-result">
+              <span class="r-num">~$200K</span>
+              <span class="r-cap">in revenue attributed to referral partners, validating and expanding the program.</span>
+            </div>
+            <div class="case-tools">
+              <h4 style="font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; font-size: var(--text-xs); color: var(--color-primary);">Tools</h4>
+              <div class="chip-row">
+                <span class="chip">SQL</span><span class="chip">Metabase</span><span class="chip">Fivetran</span><span class="chip">Google Sheets</span><span class="chip">ClickUp</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </article>
+
+      <div class="text-center" style="margin-top: var(--space-12)" data-reveal>
+        <p class="lede mx-auto" style="margin-bottom: var(--space-6)">Want the full picture, roles and dates included?</p>
+        <div class="hero-cta" style="justify-content:center">
+          <a class="btn btn-primary btn-lg" href="../assets/files/Karl_Krecke_Resume.pdf" target="_blank" rel="noopener">View résumé</a>
+          <a class="btn btn-ghost btn-lg" href="../tools/index.html">Play with the RevOps calculator</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<script src="../js/site.js" defer></script>
+</body>
+</html>

@@ -1,317 +1,173 @@
 <!DOCTYPE html>
-<html lang="en" class="h-100">
-
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karl Krecke, RevOps nerd</title>
+<meta name="description" content="Karl Krecke is a RevOps nerd who turns messy CRM, billing, and warehouse data into revenue visibility leaders trust. Former biochemistry researcher, systems thinker, builder.">
+<link rel="canonical" href="https://karlkrecke.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Karl Krecke, RevOps nerd">
+<meta property="og:description" content="RevOps nerd turning messy revenue data into decisions leaders trust. Recovering biochemist, obsessed with the systems behind how businesses grow.">
+<meta property="og:url" content="https://karlkrecke.com/">
+<meta property="og:image" content="https://karlkrecke.com/assets/img/hero-network.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
-  <meta charset="UTF-8">
+<!-- Theme init (before paint) -->
+<script>(function(){try{var s=window['local'+'Storage'];var t=s&&s.getItem('kk-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 
+<!-- Vercel Web Analytics -->
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<!-- PostHog -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only' });
+</script>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Personal website for Karl Krecke">
-  <meta name="author" content="Karl Krecke">
-
-  <title>Karl Krecke</title>
-
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
-    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
-    crossorigin="anonymous"></script>
-
-  <style>
-    main>.container {
-      padding: 60px 15px 0;
-    }
-
-    .footer {
-      background-color: #f1f0f8;
-    }
-
-    .footer>.container {
-      padding-right: 20px;
-      padding-left: 20px;
-    }
-
-    code {
-      font-size: 80%;
-    }
-
-    h1 {
-      margin-bottom: 1rem;
-    }
-
-    h4 {
-      margin-top: 2.5rem;
-      margin-bottom: 1rem;
-    }
-
-    h5 {
-      margin-top: 1.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    p {
-      line-height: 1.6;
-    }
-
-    ul {
-      padding-left: 1.25rem;
-    }
-
-    li {
-      margin-bottom: 0.5rem;
-    }
-
-    .projects-page {
-      margin-top: 1.5rem;
-    }
-
-    .projects-intro {
-      margin-bottom: 1.5rem;
-    }
-
-    .projects-nav {
-      margin: 1.5rem 0 2rem;
-      padding: 1rem;
-      background-color: #f1f0f8;
-      border-radius: 6px;
-    }
-
-    .projects-nav a {
-      display: inline-block;
-      margin-right: 1rem;
-      font-weight: 600;
-    }
-
-    .project-section {
-      margin-bottom: 3rem;
-      scroll-margin-top: 80px;
-    }
-
-    .project-card {
-      margin-bottom: 2rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid #e6e6e6;
-    }
-
-    .project-card:last-child {
-      border-bottom: none;
-    }
-
-    .project-card a {
-      font-weight: 600;
-    }
-  </style>
-
-  <!-- Vercel Web Analytics -->
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="/_vercel/insights/script.js"></script>
-
-  <!-- PostHog -->
-  <script>
-    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-    posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', {
-      api_host: 'https://us.i.posthog.com',
-      person_profiles: 'identified_only'
-    });
-  </script>
-
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,500&f[]=general-sans@400,500,600&f[]=space-mono@400,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/pages.css">
 </head>
+<body data-page="home">
 
-<body class="d-flex flex-column h-100">
+<main>
+  <!-- HERO -->
+  <section class="home-hero">
+    <div class="wrap home-hero-grid">
+      <div class="home-hero-copy">
+        <span class="eyebrow" data-reveal>Hey, I'm Karl</span>
+        <h1 data-reveal data-delay="1">Curious by default, and a little <span class="hl">obsessed</span> with how things work.</h1>
+        <p class="lede" data-reveal data-delay="2">
+          I'm Karl, a Minnesotan (you-betcha) living in Chicago. I'm a recovering
+          biochemist, passionate about business and tech.
+        </p>
+        <div class="hero-cta" data-reveal data-delay="3">
+          <a class="btn btn-primary btn-lg" href="work/index.html">Some of my work
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-ghost btn-lg" href="about/index.html">About me</a>
+        </div>
+        <div class="hero-meta" data-reveal data-delay="4">
+          <span class="chip">📍 Chicago, IL</span>
+          <span class="chip">🌽 Minnesota-made</span>
+        </div>
+      </div>
+      <div class="home-hero-art" data-reveal data-delay="2">
+        <img src="assets/img/hero-network.jpg" alt="Illustration of tangled data streams converging into a single clean upward-trending signal" width="1400" height="1050" fetchpriority="high">
+      </div>
+    </div>
+  </section>
 
-  <header>
-    <!-- Fixed navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-      <a class="navbar-brand" href="/">Home</a>
-      <a class="nav-link text-light" href="/projects">Projects</a>
-      <a class="nav-link text-light" href="/tools">Tools</a>
-    </nav>
-  </header>
+  <!-- AT A GLANCE CARDS -->
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow" data-reveal>Start anywhere</span>
+      <h2 class="section-title" data-reveal data-delay="1">Two ways to read me</h2>
+      <p class="lede" data-reveal data-delay="2" style="margin-bottom: var(--space-10)">A sharp professional spine, and the curious human holding the pen. Pick a door.</p>
+      <div class="grid grid-3">
+        <a class="card glance-card" href="work/index.html" data-reveal>
+          <span class="glance-emoji">📊</span>
+          <h3>The Work</h3>
+          <p>Three case studies where I rebuilt attribution, renewals, and partner payouts into a single source of truth.</p>
+          <span class="textlink">Case studies <span class="arrow">→</span></span>
+        </a>
+        <a class="card glance-card" href="about/index.html" data-reveal data-delay="1">
+          <span class="glance-emoji">🌍</span>
+          <h3>About Me</h3>
+          <p>Where I grew up and have lived, the sixteen countries I've traveled, and the odd facts in between.</p>
+          <span class="textlink">Get to know me <span class="arrow">→</span></span>
+        </a>
+        <a class="card glance-card" href="projects/index.html" data-reveal data-delay="2">
+          <span class="glance-emoji">🛠️</span>
+          <h3>The Builds</h3>
+          <p>Product experiments I've shipped with Replit and Lovable.</p>
+          <span class="textlink">See projects <span class="arrow">→</span></span>
+        </a>
+        <a class="card glance-card" href="dogs/index.html" data-reveal>
+          <span class="glance-emoji">🐕</span>
+          <h3>Bean &amp; Friends</h3>
+          <p>My dog Bean and the fosters who've passed through. The patient, caring side of the systems brain.</p>
+          <span class="textlink">Meet the dogs <span class="arrow">→</span></span>
+        </a>
+        <a class="card glance-card glance-tools" href="tools/index.html" data-reveal data-delay="2">
+          <span class="glance-emoji">🧮</span>
+          <h3>RevOps Calculator</h3>
+          <p>A working tool I built: pipeline coverage, NRR, and revenue bridge models.</p>
+          <span class="textlink">Try it live <span class="arrow">→</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
 
-
-  <!-- Begin page content -->
-  <main role="main" class="flex-shrink-0">
-    <div class="container">
-      <br /> <!-- ugly hack-->
-      <h1 class="mt-5">Personal Homepage</h1>
-
-      <img src="karl-krecke.jpg" width="280">
-
-
-
-
-      <!-- resume -->
-      <h4>
-        Social Media Links
-      </h4>
-      <p>
-        <a href="https://drive.google.com/file/d/1IfW7mK2Sp9jThFIjxfTVKTt7_0_udPrC/view?usp=sharing">Resume</a> |
-        <a href="https://www.linkedin.com/in/karl-krecke-479206132/">LinkedIn</a> |
-        <a href="/projects">Projects</a>
-
-
-
-
-
-
-
-
+  <!-- THINGS I FIND FASCINATING -->
+  <section class="section fascinate">
+    <div class="wrap">
+      <span class="eyebrow" data-reveal>The rabbit holes</span>
+      <h2 class="section-title" data-reveal data-delay="1">Things I find fascinating</h2>
+      <p class="lede" data-reveal data-delay="2" style="margin-bottom: var(--space-10)">
+        A running list of the podcasts, videos, and ideas I keep coming back to: Bitcoin, metabolism,
+        signal processing, and the science of doing hard things well.
       </p>
 
-      <p>
-        You can email me at my last name . my first name at gmail.com.
+      <div class="grid grid-3 fascinate-grid">
+        <div class="fascinate-col" data-reveal>
+          <h3 class="fascinate-head"><span class="fh-dot"></span>Podcasts</h3>
+          <ul class="link-list">
+            <li><a href="https://www.youtube.com/watch?v=D64hF4uVn4c" target="_blank" rel="noopener">10x Your Bitcoin Security with Multisig <span class="ext">↗</span></a></li>
+            <li><a href="https://www.youtube.com/watch?v=mDyBbGCiBUU" target="_blank" rel="noopener">Nic Carter on Bitcoin core values · Lex Fridman <span class="ext">↗</span></a></li>
+            <li><a href="https://www.youtube.com/watch?v=X13O10tCEpE" target="_blank" rel="noopener">The science of weight loss · Kevin Hall, PhD <span class="ext">↗</span></a></li>
+            <li><a href="https://www.youtube.com/watch?v=aRdEZIyyhJA" target="_blank" rel="noopener">Muscle, fat &amp; resistance training · Attia + Norton <span class="ext">↗</span></a></li>
+            <li><a href="https://www.youtube.com/watch?v=3FA3UjA0igY" target="_blank" rel="noopener">Tim Ferriss, Nick Szabo &amp; Naval Ravikant <span class="ext">↗</span></a></li>
+            <li><a href="https://samharris.org/podcasts/109-biology-culture/" target="_blank" rel="noopener">Biology &amp; Culture · Bret Weinstein (Sam Harris) <span class="ext">↗</span></a></li>
+            <li><a href="https://www.youtube.com/watch?v=0Cdxho_U1ls" target="_blank" rel="noopener">Mitochondria, cancer &amp; immunity · Navdeep Chandel <span class="ext">↗</span></a></li>
+          </ul>
+        </div>
+        <div class="fascinate-col" data-reveal data-delay="1">
+          <h3 class="fascinate-head"><span class="fh-dot"></span>Videos</h3>
+          <ul class="link-list">
+            <li><a href="https://youtu.be/AaZ_RSt0KP8" target="_blank" rel="noopener">No computer is safe · Veritasium <span class="ext">↗</span></a></li>
+            <li><a href="https://www.youtube.com/watch?v=ds0cmAV-Yek" target="_blank" rel="noopener">Fourier Series · Smarter Every Day <span class="ext">↗</span></a></li>
+            <li><a href="https://www.youtube.com/watch?v=bBC-nXj3Ng4" target="_blank" rel="noopener">How does Bitcoin actually work? · 3Blue1Brown <span class="ext">↗</span></a></li>
+          </ul>
+          <h3 class="fascinate-head" style="margin-top: var(--space-8)"><span class="fh-dot fh-gold"></span>Bitcoin</h3>
+          <ul class="link-list">
+            <li><a href="https://river.com/learn/why-should-i-run-a-bitcoin-node/" target="_blank" rel="noopener">Why Should I Run a Bitcoin Node? · River <span class="ext">↗</span></a></li>
+            <li><a href="https://www.lynalden.com/bitcoin-energy/" target="_blank" rel="noopener">Bitcoin's Energy Usage Isn't a Problem · Lyn Alden <span class="ext">↗</span></a></li>
+          </ul>
+        </div>
+        <div class="fascinate-col" data-reveal data-delay="2">
+          <h3 class="fascinate-head"><span class="fh-dot fh-teal"></span>Published research</h3>
+          <ul class="link-list">
+            <li><a href="https://www.nature.com/articles/s41419-021-04196-4" target="_blank" rel="noopener">Phosphatase PHLPP2 &amp; the cellular response to metabolic stress via AMPK · Cell Death &amp; Disease, 2021 <span class="ext">↗</span></a></li>
+          </ul>
+          <div class="fascinate-note">
+            <p>My name's still on a molecular biology paper. The curiosity didn't go anywhere; it just found a bigger dataset.</p>
+            <a class="textlink" href="about/index.html">How that happened <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section cta-band">
+    <div class="wrap text-center">
+      <h2 class="section-title" data-reveal>Hiring for RevOps?</h2>
+      <p class="lede mx-auto" data-reveal data-delay="1" style="margin-bottom: var(--space-8)">
+        I'm always happy to talk about revenue systems, attribution, and turning data teams can't trust into data they can.
       </p>
-
-      <hr />
-
-
-
-
-      <h4>
-        Podcast Episodes I Recommend
-      </h4>
-
-      <ul>
-        <li>
-          <a href="https://www.youtube.com/watch?v=D64hF4uVn4c">10x Your Bitcoin Security with Multisig</a>
-          <p> Stephan Livera sits down with Michael Flaxman to talk about the power of multisig for securing your
-            Bitcoin private
-            keys. I re-listen to this episode often.
-          </p>
-        </li>
-
-
-        <li>
-          <a href="https://www.youtube.com/watch?v=mDyBbGCiBUU">Nic Carter: Bitcoin Core Values, Layered Scaling, and
-            Blocksize Debates | Lex Fridman Podcast</a>
-          <p> All bitcoin everything </p>
-        </li>
-        
-
-
-        <li>
-          <a href="https://www.youtube.com/watch?v=X13O10tCEpE&t=2s">The science of weight loss with Kevin Hall, PhD</a>
-          <p> What conclusions we can draw from the research, what future research we still need, and what anyone can
-            do, now, to become healthier and lighter. </p>
-        </li>
-
-
-
-
-
-        <li>
-          <a href="https://www.youtube.com/watch?v=aRdEZIyyhJA">Building muscle, losing fat, and the importance of
-            resistance training</a>
-          <p> Peter Attia and Layne Norton talk about strength training,
-            navigating injuries, and nutrition science. These are two people
-            obsessed with getting the context right - something I think is lost
-            in much of our discussions around health and evidence in nutition studies.
-          </p>
-        </li>
-
-
-        <li>
-          <a href="https://www.youtube.com/watch?v=3FA3UjA0igY">Tim Ferris, Nick Szabo, and Naval Ravikant</a>
-          <p> BTC and other endlessly interesting ideas. A monster of an episode. </p>
-
-        </li>
-
-        <li>
-          <a href="https://samharris.org/podcasts/109-biology-culture/">Biology & Culture: A coversation with Bret
-            Weinstein</a>
-          <p> Bret Weinstein and Sam Harris cover the Evergreen fiasco, population and sex differences, as well as the
-            utility of metaphorical truth.
-          </p>
-
-        </li>
-        <li>
-          <a href="https://www.youtube.com/watch?v=0Cdxho_U1ls">Mitochondria control cancer and immunity</a>
-          <p>
-            Not a podcast, but a great presentation by Navdeep Chandel about the link between metabolism and immunology.
-
-          </p>
-
-        </li>
-      </ul>
-
-
-      <h4>
-        Random Fascinating Videos
-      </h4>
-
-      <ul>
-        <li>
-          <a href="https://youtu.be/AaZ_RSt0KP8"> No computer is safe - Veritasium</a>
-          <p> How the universe is hostile to computers; the implications can be scary but are fascinating nevertheless.
-          </p>
-        </li>
-
-        <li>
-          <a href="https://www.youtube.com/watch?v=ds0cmAV-Yek"> Fourier Series - Smarter Every Day</a>
-          <p> The explanation I wish I found while taking Physical Biochem. </p>
-        </li>
-
-        <li>
-          <a href="https://www.youtube.com/watch?v=bBC-nXj3Ng4">But how does bitcoin actually work? - 3Blue1Brown</a>
-          <p> The math behind Bitcoin </p>
-        </li>
-  </ul>
-      <h4>
-        Bitcoin
-      </h4>
-      <ul>
-        <li>
-          <a
-            href="https://river.com/learn/why-should-i-run-a-bitcoin-node/#:~:text=Running%20a%20Bitcoin%20node%20allows,the%20robustness%20of%20the%20network.">Why
-            Should I Run a Bitcoin Node? - River
-          </a>
-        </li>
-
-          <li>
-            <a href="https://www.lynalden.com/bitcoin-energy/">Bitcoin's Energy Usage Isn't a Problem. Here's Why. - Lyn
-              Alden
-
-            </a>
-          </li>
-
-      </ul>
-
-      <h4>
-        Publications
-      </h4>
-      <ul>
-        <li>
-          <a href="https://www.nature.com/articles/s41419-021-04196-4">Phosphatase PHLPP2 regulates the cellular
-            response to metabolic stress through AMPK
-            - Cell Death & Disease
-          </a>
-          <i>October 2021</i>
-        </li>
-      </ul>
-
-
+      <div class="hero-cta" style="justify-content:center" data-reveal data-delay="2">
+        <a class="btn btn-primary btn-lg" href="mailto:krecke.karl@gmail.com">Get in touch</a>
+        <a class="btn btn-ghost btn-lg" href="assets/files/Karl_Krecke_Resume.pdf" target="_blank" rel="noopener">View résumé</a>
+      </div>
     </div>
-  </main>
+  </section>
+</main>
 
-
-  <footer class="footer mt-auto py-3">
-    <div class="container">
-
-    </div>
-  </footer>
-
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"><\/script>')</script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/js/bootstrap.bundle.min.js"
-    integrity="sha384-zDnhMsjVZfS3hiP7oCBRmfjkQC4fzxVxFhBx8Hkz2aZX8gEvA/jsP3eXRCvzTofP"
-    crossorigin="anonymous"></script>
-
+<script src="js/site.js" defer></script>
 </body>
-
 </html>
