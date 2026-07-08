@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>RevOps Calculator · Karl Krecke</title>
-<meta name="description" content="A working RevOps calculator by Karl Krecke: pipeline forecast coverage, retention & NRR, revenue bridge, and free-to-paid conversion attribution models. Enter your numbers, get instant analysis. Inputs stay in your browser.">
+<meta name="description" content="A working RevOps calculator by Karl Krecke: pipeline forecast coverage, retention & NRR, revenue bridge, free-to-paid conversion attribution, and expansion/churn signal models. Enter your numbers, get instant analysis. Inputs stay in your browser.">
 <link rel="canonical" href="https://karlkrecke.com/tools/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="RevOps Calculator · Karl Krecke">
-<meta property="og:description" content="Pipeline forecast, retention & NRR, revenue bridge, and conversion attribution: a working tool I built.">
+<meta property="og:description" content="Pipeline forecast, retention & NRR, revenue bridge, conversion attribution, and expansion/churn signals: a working tool I built.">
 <meta property="og:url" content="https://karlkrecke.com/tools/">
 <meta property="og:image" content="https://karlkrecke.com/assets/img/hero-network.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -79,6 +79,10 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
   .pipeline-table tr:nth-child(even) td { background: var(--light); }
   .pipeline-table input { border: 1px solid var(--border); padding: 0.3rem 0.5rem; font-family: var(--mono); font-size: 13px; width: 100%; border-radius: 4px; background: var(--color-bg); }
   .pipeline-table .calc-cell { font-family: var(--mono); font-size: 13px; color: var(--color-primary); text-align: right; }
+  .pipeline-table .calc-cell.good { color: var(--green); }
+  .pipeline-table .calc-cell.warn { color: var(--yellow); }
+  .pipeline-table .calc-cell.bad { color: var(--red); }
+  .pipeline-table .calc-cell.muted { color: var(--muted); }
 
   .results { background: var(--light); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-top: 1.5rem; }
   .results-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 1rem; font-family: var(--mono); }
@@ -134,9 +138,9 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
       <span class="eyebrow" data-reveal>A tool I built</span>
       <h1 data-reveal data-delay="1">RevOps Calculator</h1>
       <p class="lede" data-reveal data-delay="2">
-        Four models I use to think about revenue: pipeline forecast coverage, retention &amp; NRR,
-        a revenue bridge, and free-to-paid conversion attribution. Enter your numbers and get instant
-        analysis. Everything runs in your browser; nothing is stored or sent anywhere.
+        Five models I use to think about revenue: pipeline forecast coverage, retention &amp; NRR,
+        a revenue bridge, free-to-paid conversion attribution, and expansion/churn signals. Enter your numbers
+        and get instant analysis. Everything runs in your browser; nothing is stored or sent anywhere.
       </p>
     </div>
   </section>
@@ -150,6 +154,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
           <button class="tab" onclick="switchTab('retention', this)">Retention &amp; NRR</button>
           <button class="tab" onclick="switchTab('bridge', this)">Revenue Bridge</button>
           <button class="tab" onclick="switchTab('attribution', this)">Conversion Attribution</button>
+          <button class="tab" onclick="switchTab('signals', this)">Expansion &amp; Churn</button>
         </div>
 
         <!-- ==================== TAB 1: PIPELINE ==================== -->
@@ -528,6 +533,138 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
           </div>
         </div>
 
+        <!-- ==================== TAB 5: EXPANSION & CHURN SIGNALS ==================== -->
+        <div class="tab-panel" id="tab-signals">
+
+          <h2>Expansion &amp; churn signals</h2>
+          <p class="note" style="font-size:13px; color: var(--muted); margin-bottom: 1.25rem;">Score accounts on usage-based signals to flag who's about to expand and who's about to churn &mdash; before either one emails support. Built on the same event data usage-based billing already tracks: plan utilization, seats, activity trend, and recency.</p>
+
+          <h3>Dollar impact assumptions</h3>
+          <div class="field-group">
+            <div class="field">
+              <label>Avg incremental MRR per expansion account ($)</label>
+              <input type="number" id="s-expmrr" value="450" oninput="calcSignals()">
+              <span class="field-hint">What an expansion-ready account is worth on average if they upgrade seats or plan.</span>
+            </div>
+            <div class="field">
+              <label>Avg MRR at risk per at-risk account ($)</label>
+              <input type="number" id="s-churnmrr" value="380" oninput="calcSignals()">
+              <span class="field-hint">What you stand to lose on average if an at-risk account churns.</span>
+            </div>
+          </div>
+
+          <h3>Accounts</h3>
+          <p class="note">Usage vs plan over 100% and rising usage/seats point to expansion. Falling usage, falling logins, and days of silence point to churn risk. Edit any account to see its signal update live.</p>
+          <br>
+          <table class="pipeline-table" id="signals-table">
+            <thead>
+              <tr>
+                <th style="width:20%">Account</th>
+                <th style="width:13%">Usage vs plan %</th>
+                <th style="width:13%">Seat utilization %</th>
+                <th style="width:14%">Usage growth 30d %</th>
+                <th style="width:14%">Login trend 30d %</th>
+                <th style="width:12%">Days since active</th>
+                <th style="width:14%">Signal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="text" value="Acme Robotics" oninput="calcSignals()"></td>
+                <td><input type="number" value="118" oninput="calcSignals()"></td>
+                <td><input type="number" value="92" oninput="calcSignals()"></td>
+                <td><input type="number" value="45" oninput="calcSignals()"></td>
+                <td><input type="number" value="20" oninput="calcSignals()"></td>
+                <td><input type="number" value="1" oninput="calcSignals()"></td>
+                <td class="calc-cell" id="s-signal0">–</td>
+              </tr>
+              <tr>
+                <td><input type="text" value="Bright Path Media" oninput="calcSignals()"></td>
+                <td><input type="number" value="40" oninput="calcSignals()"></td>
+                <td><input type="number" value="35" oninput="calcSignals()"></td>
+                <td><input type="number" value="-55" oninput="calcSignals()"></td>
+                <td><input type="number" value="-60" oninput="calcSignals()"></td>
+                <td><input type="number" value="22" oninput="calcSignals()"></td>
+                <td class="calc-cell" id="s-signal1">–</td>
+              </tr>
+              <tr>
+                <td><input type="text" value="Cobalt Systems" oninput="calcSignals()"></td>
+                <td><input type="number" value="75" oninput="calcSignals()"></td>
+                <td><input type="number" value="68" oninput="calcSignals()"></td>
+                <td><input type="number" value="10" oninput="calcSignals()"></td>
+                <td><input type="number" value="5" oninput="calcSignals()"></td>
+                <td><input type="number" value="3" oninput="calcSignals()"></td>
+                <td class="calc-cell" id="s-signal2">–</td>
+              </tr>
+              <tr>
+                <td><input type="text" value="Driftwood Labs" oninput="calcSignals()"></td>
+                <td><input type="number" value="95" oninput="calcSignals()"></td>
+                <td><input type="number" value="88" oninput="calcSignals()"></td>
+                <td><input type="number" value="30" oninput="calcSignals()"></td>
+                <td><input type="number" value="15" oninput="calcSignals()"></td>
+                <td><input type="number" value="2" oninput="calcSignals()"></td>
+                <td class="calc-cell" id="s-signal3">–</td>
+              </tr>
+              <tr>
+                <td><input type="text" value="Elm &amp; Co" oninput="calcSignals()"></td>
+                <td><input type="number" value="25" oninput="calcSignals()"></td>
+                <td><input type="number" value="20" oninput="calcSignals()"></td>
+                <td><input type="number" value="-70" oninput="calcSignals()"></td>
+                <td><input type="number" value="-80" oninput="calcSignals()"></td>
+                <td><input type="number" value="35" oninput="calcSignals()"></td>
+                <td class="calc-cell" id="s-signal4">–</td>
+              </tr>
+              <tr>
+                <td><input type="text" value="Fenwick Analytics" oninput="calcSignals()"></td>
+                <td><input type="number" value="60" oninput="calcSignals()"></td>
+                <td><input type="number" value="55" oninput="calcSignals()"></td>
+                <td><input type="number" value="0" oninput="calcSignals()"></td>
+                <td><input type="number" value="-5" oninput="calcSignals()"></td>
+                <td><input type="number" value="8" oninput="calcSignals()"></td>
+                <td class="calc-cell" id="s-signal5">–</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="results" id="signals-results">
+            <div class="results-title">Output</div>
+            <div class="metrics-grid">
+              <div class="metric">
+                <div class="metric-label">Top expansion signal</div>
+                <div class="metric-value text" id="s-topexp">–</div>
+                <div class="metric-sub" id="s-topexpsub"></div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Top churn risk</div>
+                <div class="metric-value text" id="s-topchurn">–</div>
+                <div class="metric-sub" id="s-topchurnsub"></div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Expansion-ready accounts</div>
+                <div class="metric-value" id="s-expcount">–</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">At-risk accounts</div>
+                <div class="metric-value" id="s-riskcount">–</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Estimated expansion pipeline</div>
+                <div class="metric-value" id="s-exppipeline">–</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">MRR at risk</div>
+                <div class="metric-value" id="s-mrrrisk">–</div>
+              </div>
+            </div>
+            <div class="insight neutral" id="signals-insight">Fill in your numbers above to see analysis.</div>
+          </div>
+
+          <div class="btn-row">
+            <button class="secondary" onclick="copyResults('signals')">Copy results</button>
+            <button class="secondary" onclick="resetTab('signals')">Reset</button>
+          </div>
+        </div>
+
         <hr class="rule" style="margin-block: var(--space-10)">
         <p style="font-size: 13px; color: var(--color-text-muted)">Built by <a href="../index.html" class="textlink">Karl Krecke</a>. Inputs stay in your browser and are never stored.</p>
 
@@ -772,6 +909,81 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
     setInsight('attribution-insight', insightText, 'neutral');
   }
 
+  // ─── Expansion & churn signal scorer ────────────────────────────────────────────
+  function clamp(x, lo, hi) {
+    return Math.max(lo, Math.min(hi, x));
+  }
+
+  function calcSignals() {
+    const expMRR = v('s-expmrr');
+    const churnMRR = v('s-churnmrr');
+
+    const rows = document.querySelectorAll('#signals-table tbody tr');
+    const data = [];
+
+    rows.forEach((row, i) => {
+      const nameInput = row.querySelector('input[type="text"]');
+      const numInputs = row.querySelectorAll('input[type="number"]');
+      const name = (nameInput && nameInput.value) || `Account ${i + 1}`;
+      const usagePct = parseFloat(numInputs[0].value) || 0;
+      const seatUtil = parseFloat(numInputs[1].value) || 0;
+      const growth = parseFloat(numInputs[2].value) || 0;
+      const loginTrend = parseFloat(numInputs[3].value) || 0;
+      const daysSinceActive = Math.max(0, parseFloat(numInputs[4].value) || 0);
+
+      const usageComponent = clamp(usagePct, 0, 130) / 130 * 100;
+      const seatComponent = clamp(seatUtil, 0, 100);
+      const growthComponent = (clamp(growth, -50, 100) + 50) / 150 * 100;
+      const expansionScore = clamp(0.4 * usageComponent + 0.3 * seatComponent + 0.3 * growthComponent, 0, 100);
+
+      const growthRiskComponent = 100 - growthComponent;
+      const loginRiskComponent = (50 - clamp(loginTrend, -100, 50)) / 150 * 100;
+      const recencyRiskComponent = clamp(daysSinceActive, 0, 60) / 60 * 100;
+      const churnScore = clamp(0.35 * growthRiskComponent + 0.35 * loginRiskComponent + 0.3 * recencyRiskComponent, 0, 100);
+
+      let cls, clsColor;
+      if (churnScore >= 60) {
+        cls = 'At risk'; clsColor = 'bad';
+      } else if (expansionScore >= 65) {
+        cls = 'Expansion ready'; clsColor = 'good';
+      } else {
+        cls = 'Healthy'; clsColor = 'muted';
+      }
+
+      data.push({ i, name, usagePct, seatUtil, growth, loginTrend, daysSinceActive, expansionScore, churnScore, cls, clsColor });
+
+      const cell = document.getElementById('s-signal' + i);
+      if (cell) {
+        cell.textContent = cls + ' \u00b7 ' + Math.round(clsColor === 'bad' ? churnScore : expansionScore);
+        cell.className = 'calc-cell ' + clsColor;
+      }
+    });
+
+    const topExp = data.reduce((a, b) => (b.expansionScore > a.expansionScore ? b : a), data[0]);
+    const topChurn = data.reduce((a, b) => (b.churnScore > a.churnScore ? b : a), data[0]);
+    const expReadyCount = data.filter(d => d.cls === 'Expansion ready').length;
+    const atRiskCount = data.filter(d => d.cls === 'At risk').length;
+    const total = data.length;
+
+    setTextMetric('s-topexp', topExp.name);
+    document.getElementById('s-topexpsub').textContent = Math.round(topExp.expansionScore) + ' score \u00b7 ' + Math.round(topExp.usagePct) + '% of plan, ' + (topExp.growth >= 0 ? '+' : '') + Math.round(topExp.growth) + '% usage growth';
+
+    setTextMetric('s-topchurn', topChurn.name);
+    document.getElementById('s-topchurnsub').textContent = Math.round(topChurn.churnScore) + ' score \u00b7 ' + (topChurn.growth >= 0 ? '+' : '') + Math.round(topChurn.growth) + '% usage, ' + Math.round(topChurn.daysSinceActive) + ' days inactive';
+
+    setMetric('s-expcount', expReadyCount + ' of ' + total, expReadyCount > 0 ? 'good' : undefined);
+    setMetric('s-riskcount', atRiskCount + ' of ' + total, atRiskCount > 0 ? 'bad' : 'good');
+    setMetric('s-exppipeline', fmt(expReadyCount * expMRR));
+    setMetric('s-mrrrisk', fmt(atRiskCount * churnMRR), atRiskCount > 0 ? 'bad' : 'good');
+
+    let insightText = `"${topExp.name}" is your strongest expansion signal at a score of ${Math.round(topExp.expansionScore)} \u2014 running at ${Math.round(topExp.usagePct)}% of plan with usage up ${topExp.growth >= 0 ? '+' : ''}${Math.round(topExp.growth)}% over 30 days. Reach out before they hit a hard limit.`;
+    insightText += ` "${topChurn.name}" is the biggest churn risk at a score of ${Math.round(topChurn.churnScore)}: usage is ${topChurn.growth >= 0 ? 'up' : 'down'} ${Math.abs(Math.round(topChurn.growth))}%, logins are trending ${topChurn.loginTrend >= 0 ? 'up' : 'down'} ${Math.abs(Math.round(topChurn.loginTrend))}%, and it's been ${Math.round(topChurn.daysSinceActive)} days since anyone was active.`;
+    insightText += ` Across all ${total} accounts: ${expReadyCount} are expansion-ready (${fmt(expReadyCount * expMRR)} in estimated pipeline) and ${atRiskCount} are at risk (${fmt(atRiskCount * churnMRR)} in MRR exposed).`;
+
+    const overallCls = atRiskCount > expReadyCount ? 'bad' : atRiskCount > 0 ? 'warn' : 'good';
+    setInsight('signals-insight', insightText, overallCls);
+  }
+
   // ─── Copy results ─────────────────────────────────────────────────────────────
   function copyResults(tab) {
     let text = '';
@@ -831,6 +1043,19 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
         '',
         'Analysis: ' + document.getElementById('attribution-insight').textContent,
       ].join('\n');
+    } else if (tab === 'signals') {
+      text = [
+        'EXPANSION & CHURN SIGNALS',
+        '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500',
+        'Top expansion signal: ' + document.getElementById('s-topexp').textContent + ' (' + document.getElementById('s-topexpsub').textContent + ')',
+        'Top churn risk:       ' + document.getElementById('s-topchurn').textContent + ' (' + document.getElementById('s-topchurnsub').textContent + ')',
+        'Expansion-ready accounts: ' + document.getElementById('s-expcount').textContent,
+        'At-risk accounts:         ' + document.getElementById('s-riskcount').textContent,
+        'Estimated expansion pipeline: ' + document.getElementById('s-exppipeline').textContent,
+        'MRR at risk:                  ' + document.getElementById('s-mrrrisk').textContent,
+        '',
+        'Analysis: ' + document.getElementById('signals-insight').textContent,
+      ].join('\n');
     }
 
     navigator.clipboard.writeText(text).then(() => {
@@ -845,7 +1070,8 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
     pipeline: { 'p-target': 1200000, 'p-months': 7, 'p-closed': 612000, 'p-coverage': 3.5 },
     retention: { 'ret-start': 528000, 'ret-churn': 42000, 'ret-contraction': 18000, 'ret-expansion': 36000, 'ret-target': 1200000, 'ret-newlogo': 320000 },
     bridge: { 'b-opening': 528000, 'b-target': 1200000, 'b-newlogo': 320000, 'b-expansion': 36000, 'b-churn': 42000, 'b-contraction': 18000 },
-    attribution: { 'a-mrr': 18200 }
+    attribution: { 'a-mrr': 18200 },
+    signals: { 's-expmrr': 450, 's-churnmrr': 380 }
   };
 
   function resetTab(tab) {
@@ -858,6 +1084,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
     if (tab === 'retention') calcRetention();
     if (tab === 'bridge') calcBridge();
     if (tab === 'attribution') calcAttribution();
+    if (tab === 'signals') calcSignals();
   }
 
   // ─── Init ─────────────────────────────────────────────────────────────────────
@@ -865,6 +1092,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
   calcRetention();
   calcBridge();
   calcAttribution();
+  calcSignals();
 </script>
 </body>
 </html>
