@@ -123,10 +123,63 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
   .note { font-size: 12px; color: var(--muted); margin-top: 0.4rem; }
   .field-hint { font-size: 11.5px; color: var(--muted); margin-top: 0.25rem; line-height: 1.4; }
 
+  /* ---- Comp Stress-Tester additions ---- */
+  .comp-slider-group { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.5rem; margin-bottom: 1rem; }
+  .comp-slider-group.three { grid-template-columns: 1fr 1fr 1fr; }
+  .slider-field { display: flex; flex-direction: column; gap: 0.3rem; }
+  .slider-field label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .slider-row { display: flex; align-items: center; gap: 0.6rem; }
+  .slider-row input[type="range"] { flex: 1; height: 4px; accent-color: var(--color-primary); cursor: pointer; }
+  .slider-val { font-family: var(--mono); font-size: 13px; color: var(--color-primary); min-width: 4.5rem; text-align: right; white-space: nowrap; }
+
+  .scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.25rem 0; }
+  .scenario-card { background: var(--light); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem 1.1rem; }
+  .scenario-card.active-scenario { border-color: var(--color-primary); background: var(--accent-light); }
+  .scenario-card-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.6rem; font-family: var(--mono); }
+  .scenario-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.3rem; font-size: 13px; }
+  .scenario-row .s-label { color: var(--muted); }
+  .scenario-row .s-val { font-family: var(--mono); font-weight: 600; color: var(--text); }
+  .scenario-row .s-val.good { color: var(--green); }
+  .scenario-row .s-val.warn { color: var(--yellow); }
+  .scenario-row .s-val.bad { color: var(--red); }
+  .scenario-divider { border: none; border-top: 1px solid var(--border); margin: 0.5rem 0; }
+  .scenario-highlight { font-size: 12px; margin-top: 0.5rem; padding: 0.45rem 0.6rem; border-radius: var(--radius-sm); background: var(--color-bg); }
+
+  .misalign-banner { margin: 1.25rem 0 0; padding: 0.9rem 1.1rem; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+  .misalign-banner.bad { background: var(--red-light); color: var(--red); }
+  .misalign-banner.warn { background: var(--yellow-light); color: var(--yellow); }
+  .misalign-banner.good { background: var(--green-light); color: var(--green); }
+
+  .risk-list { display: flex; flex-direction: column; gap: 0.75rem; margin: 1.25rem 0 0; }
+  .risk-card { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+  .risk-card-header { display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1rem; cursor: pointer; user-select: none; }
+  .risk-card-header:hover { background: var(--light); }
+  .risk-severity { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 0.2rem 0.55rem; border-radius: var(--radius-full); font-family: var(--mono); flex-shrink: 0; }
+  .risk-severity.high { background: var(--red-light); color: var(--red); }
+  .risk-severity.medium { background: var(--yellow-light); color: var(--yellow); }
+  .risk-severity.low { background: var(--accent-light); color: var(--accent); }
+  .risk-title { font-size: 13.5px; font-weight: 600; flex: 1; }
+  .risk-chevron { font-size: 11px; color: var(--muted); transition: transform 0.15s; }
+  .risk-card.open .risk-chevron { transform: rotate(90deg); }
+  .risk-body { display: none; padding: 0 1rem 1rem; }
+  .risk-card.open .risk-body { display: block; }
+  .risk-section { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0.65rem 0 0.2rem; font-family: var(--mono); }
+  .risk-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+  .risk-fix { background: var(--green-light); color: var(--green); border-radius: var(--radius-sm); padding: 0.55rem 0.75rem; font-size: 13px; line-height: 1.5; margin-top: 0.3rem; }
+
+  .align-score-wrap { display: flex; align-items: center; gap: 1.25rem; margin: 1.25rem 0 0; }
+  .align-score-dial { width: 68px; height: 68px; flex-shrink: 0; }
+  .align-score-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .align-score-num { font-family: var(--mono); font-size: 2.2rem; font-weight: 700; line-height: 1; }
+  .align-score-desc { font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 0.2rem; }
+
   @media (max-width: 580px) {
     .field-group { grid-template-columns: 1fr; }
     .field-group.three { grid-template-columns: 1fr 1fr; }
     .metrics-grid { grid-template-columns: 1fr 1fr; }
+    .comp-slider-group { grid-template-columns: 1fr; }
+    .comp-slider-group.three { grid-template-columns: 1fr; }
+    .scenario-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -155,6 +208,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
           <button class="tab" onclick="switchTab('bridge', this)">Revenue Bridge</button>
           <button class="tab" onclick="switchTab('attribution', this)">Conversion Attribution</button>
           <button class="tab" onclick="switchTab('signals', this)">Expansion &amp; Churn</button>
+          <button class="tab" onclick="switchTab('comp', this)">Comp Stress-Tester</button>
         </div>
 
         <!-- ==================== TAB 1: PIPELINE ==================== -->
@@ -665,6 +719,174 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
           </div>
         </div>
 
+        <!-- ==================== TAB 6: COMP STRESS-TESTER ==================== -->
+        <div class="tab-panel" id="tab-comp">
+
+          <h2>Comp plan stress-tester</h2>
+          <p class="note" style="font-size:13px; color: var(--muted); margin-bottom: 1.25rem;">Configure a comp plan for a hypothetical usage-based SaaS company. The tool models how a rational rep would behave across three scenarios &mdash; durable growth, contract-reshaping, and low-quality growth &mdash; and flags where rep incentives diverge from company value, with the structural fix attached. Illustrative economics; designed to expose incentive risk, not prescribe a universal comp plan.</p>
+
+          <h3>Plan mechanics</h3>
+          <p class="note">The sliders below define the plan. Everything is live: change a slider and the scenarios re-score.</p>
+          <div class="comp-slider-group">
+            <div class="slider-field">
+              <label>OTE (annual)</label>
+              <input type="number" id="comp-ote" value="180000" oninput="calcComp()">
+            </div>
+            <div class="slider-field">
+              <label>Variable / base split</label>
+              <div class="slider-row">
+                <input type="range" id="comp-split" min="0" max="100" value="50" oninput="calcComp()">
+                <span class="slider-val" id="comp-split-val">50% var</span>
+              </div>
+            </div>
+            <div class="slider-field">
+              <label>Annual quota</label>
+              <input type="number" id="comp-quota" value="900000" oninput="calcComp()">
+            </div>
+            <div class="slider-field">
+              <label>Commission paid on</label>
+              <select id="comp-basis" onchange="calcComp()">
+                <option value="booked">Booked ARR</option>
+                <option value="realized">Realized usage revenue</option>
+                <option value="gp">Gross profit</option>
+                <option value="nrr">Net retained revenue</option>
+              </select>
+            </div>
+            <div class="slider-field">
+              <label>Accelerator after quota</label>
+              <div class="slider-row">
+                <input type="range" id="comp-accel" min="1" max="4" step="0.1" value="1.5" oninput="calcComp()">
+                <span class="slider-val" id="comp-accel-val">1.5x</span>
+              </div>
+            </div>
+            <div class="slider-field">
+              <label>Payout timing</label>
+              <select id="comp-timing" onchange="calcComp()">
+                <option value="upfront">Upfront at close</option>
+                <option value="deferred">Deferred over term</option>
+                <option value="milestone">Milestone-gated</option>
+              </select>
+            </div>
+          </div>
+
+          <h3>Kickers &amp; ownership</h3>
+          <div class="comp-slider-group">
+            <div class="slider-field">
+              <label>Annual-conversion kicker rate</label>
+              <div class="slider-row">
+                <input type="range" id="comp-kicker" min="0" max="25" step="0.5" value="5" oninput="calcComp()">
+                <span class="slider-val" id="comp-kicker-val">5%</span>
+              </div>
+            </div>
+            <div class="slider-field">
+              <label>Kicker paid on</label>
+              <select id="comp-kicker-basis" onchange="calcComp()">
+                <option value="contract">Contract structure</option>
+                <option value="incremental">Incremental growth</option>
+                <option value="margin">Margin-adjusted growth</option>
+              </select>
+            </div>
+            <div class="slider-field">
+              <label>Renewal bonus rate</label>
+              <div class="slider-row">
+                <input type="range" id="comp-renewal" min="0" max="25" step="0.5" value="3" oninput="calcComp()">
+                <span class="slider-val" id="comp-renewal-val">3%</span>
+              </div>
+            </div>
+            <div class="slider-field">
+              <label>NB &rarr; post-sale handoff</label>
+              <select id="comp-handoff" onchange="calcComp()">
+                <option value="immediate">Immediate at close</option>
+                <option value="activation">After activation</option>
+                <option value="ramp">After usage ramp</option>
+              </select>
+            </div>
+            <div class="slider-field">
+              <label>Gross margin (company)</label>
+              <div class="slider-row">
+                <input type="range" id="comp-margin" min="10" max="95" value="75" oninput="calcComp()">
+                <span class="slider-val" id="comp-margin-val">75%</span>
+              </div>
+            </div>
+            <div class="slider-field">
+              <label>Clawback on early churn</label>
+              <select id="comp-clawback" onchange="calcComp()">
+                <option value="none">None</option>
+                <option value="partial">Partial (50%)</option>
+                <option value="full">Full</option>
+              </select>
+            </div>
+          </div>
+
+          <h3>Scenarios &mdash; same plan, three rep behaviors</h3>
+          <p class="note">Each scenario is the same rep facing the same book. The only difference is which behavior the plan rewards more. Edit any cell to test your own case.</p>
+          <div class="scenario-grid">
+            <div class="scenario-card" id="sc-card-0">
+              <div class="scenario-card-title">A. Durable growth</div>
+              <div class="scenario-row"><span class="s-label">Booked ARR</span><input type="number" class="s-input" data-sc="0" data-field="arr" value="900000" oninput="calcComp()"></div>
+              <div class="scenario-row"><span class="s-label">Realized usage</span><input type="number" class="s-input" data-sc="0" data-field="usage" value="92" oninput="calcComp()"></div>
+              <div class="scenario-row"><span class="s-label">Annual conversion</span><input type="number" class="s-input" data-sc="0" data-field="annual" value="35" oninput="calcComp()"></div>
+              <div class="scenario-row"><span class="s-label">Net expansion</span><input type="number" class="s-input" data-sc="0" data-field="expansion" value="15" oninput="calcComp()"></div>
+              <div class="scenario-row"><span class="s-label">12-mo retention</span><input type="number" class="s-input" data-sc="0" data-field="retention" value="94" oninput="calcComp()"></div>
+              <hr class="scenario-divider">
+              <div class="scenario-row"><span class="s-label">Rep payout</span><span class="s-val" id="sc-payout-0">&ndash;</span></div>
+              <div class="scenario-row"><span class="s-label">Company value</span><span class="s-val" id="sc-value-0">&ndash;</span></div>
+              <div class="scenario-row"><span class="s-label">Payout / value</span><span class="s-val" id="sc-ratio-0">&ndash;</span></div>
+            </div>
+            <div class="scenario-card" id="sc-card-1">
+              <div class="scenario-card-title">B. Contract reshaping</div>
+              <div class="scenario-row"><span class="s-label">Booked ARR</span><input type="number" class="s-input" data-sc="1" data-field="arr" value="900000" oninput="calcComp()"></div>
+              <div class="scenario-row"><span class="s-label">Realized usage</span><input type="number" class="s-input" data-sc="1" data-field="usage" value="92" oninput="calcComp()"></div>
+              <div class="scenario-row"><span class="s-label">Annual conversion</span><input type="number" class="s-input" data-sc="1" data-field="annual" value="85" oninput="calcComp()"></div>
+              <div class="scenario-row"><span class="s-label">Net expansion</span><input type="number" class="s-input" data-sc="1" data-field="expansion" value="2" oninput="calcComp()"></div>
+              <div class="scenario-row"><span class="s-label">12-mo retention</span><input type="number" class="s-input" data-sc="1" data-field="retention" value="94" oninput="calcComp()"></div>
+              <hr class="scenario-divider">
+              <div class="scenario-row"><span class="s-label">Rep payout</span><span class="s-val" id="sc-payout-1">&ndash;</span></div>
+              <div class="scenario-row"><span class="s-label">Company value</span><span class="s-val" id="sc-value-1">&ndash;</span></div>
+              <div class="scenario-row"><span class="s-label">Payout / value</span><span class="s-val" id="sc-ratio-1">&ndash;</span></div>
+            </div>
+            <div class="scenario-card" id="sc-card-2">
+              <div class="scenario-card-title">C. Low-quality growth</div>
+              <div class="scenario-row"><span class="s-label">Booked ARR</span><input type="number" class="s-input" data-sc="2" data-field="arr" value="1150000" oninput="calcComp()"></div>
+              <div class="scenario-row"><span class="s-label">Realized usage</span><input type="number" class="s-input" data-sc="2" data-field="usage" value="55" oninput="calcComp()"></div>
+              <div class="scenario-row"><span class="s-label">Annual conversion</span><input type="number" class="s-input" data-sc="2" data-field="annual" value="60" oninput="calcComp()"></div>
+              <div class="scenario-row"><span class="s-label">Net expansion</span><input type="number" class="s-input" data-sc="2" data-field="expansion" value="8" oninput="calcComp()"></div>
+              <div class="scenario-row"><span class="s-label">12-mo retention</span><input type="number" class="s-input" data-sc="2" data-field="retention" value="68" oninput="calcComp()"></div>
+              <hr class="scenario-divider">
+              <div class="scenario-row"><span class="s-label">Rep payout</span><span class="s-val" id="sc-payout-2">&ndash;</span></div>
+              <div class="scenario-row"><span class="s-label">Company value</span><span class="s-val" id="sc-value-2">&ndash;</span></div>
+              <div class="scenario-row"><span class="s-label">Payout / value</span><span class="s-val" id="sc-ratio-2">&ndash;</span></div>
+            </div>
+          </div>
+
+          <div class="results">
+            <div class="results-title">Alignment score</div>
+            <div class="align-score-wrap">
+              <svg class="align-score-dial" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--border)" stroke-width="3.2"/>
+                <circle id="comp-score-arc" cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-good)" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="97.4" stroke-dashoffset="97.4" transform="rotate(-90 18 18)" style="transition: stroke-dashoffset 0.4s, stroke 0.4s"/>
+              </svg>
+              <div>
+                <div class="align-score-label">Directional alignment</div>
+                <div class="align-score-num" id="comp-score-num">&ndash;</div>
+                <div class="align-score-desc" id="comp-score-desc">Configure a plan to score it.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="misalign-banner" id="comp-misalign-banner">Adjust the plan to see the misalignment verdict.</div>
+
+          <div class="results" style="margin-top: 1.5rem">
+            <div class="results-title">Incentive risk findings</div>
+            <div class="risk-list" id="comp-risk-list"></div>
+          </div>
+
+          <div class="btn-row">
+            <button class="secondary" onclick="copyResults('comp')">Copy results</button>
+            <button class="secondary" onclick="resetTab('comp')">Reset</button>
+          </div>
+        </div>
+
         <hr class="rule" style="margin-block: var(--space-10)">
         <p style="font-size: 13px; color: var(--color-text-muted)">Built by <a href="../index.html" class="textlink">Karl Krecke</a>. Inputs stay in your browser and are never stored.</p>
 
@@ -984,6 +1206,300 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
     setInsight('signals-insight', insightText, overallCls);
   }
 
+  // ─── Comp plan stress-tester ─────────────────────────────────────────────────
+  function calcComp() {
+    const ote = v('comp-ote');
+    const splitPct = v('comp-split') / 100;
+    const quota = v('comp-quota');
+    const basis = document.getElementById('comp-basis').value;
+    const accel = v('comp-accel');
+    const timing = document.getElementById('comp-timing').value;
+    const kickerRate = v('comp-kicker') / 100;
+    const kickerBasis = document.getElementById('comp-kicker-basis').value;
+    const renewalRate = v('comp-renewal') / 100;
+    const handoff = document.getElementById('comp-handoff').value;
+    const margin = v('comp-margin') / 100;
+    const clawback = document.getElementById('comp-clawback').value;
+
+    // slider label sync
+    const sv = (id, suffix) => {
+      const el = document.getElementById(id);
+      const out = document.getElementById(id + '-val');
+      if (el && out) out.textContent = el.value + suffix;
+    };
+    sv('comp-split', '% var');
+    sv('comp-accel', 'x');
+    sv('comp-kicker', '%');
+    sv('comp-renewal', '%');
+    sv('comp-margin', '%');
+
+    const variablePay = ote * splitPct;
+    const basePay = ote * (1 - splitPct);
+    const commissionRate = quota > 0 ? variablePay / quota : 0;
+
+    const scField = (i, field) => {
+      const el = document.querySelector('.s-input[data-sc="' + i + '"][data-field="' + field + '"]');
+      return el ? (parseFloat(el.value) || 0) : 0;
+    };
+
+    const scenarios = [];
+    for (let i = 0; i < 3; i++) {
+      const arr = scField(i, 'arr');
+      const usage = scField(i, 'usage') / 100;
+      const annual = scField(i, 'annual') / 100;
+      const expansion = scField(i, 'expansion') / 100;
+      const retention = scField(i, 'retention') / 100;
+
+      const realizedRevenue = arr * usage;
+      const grossProfit = realizedRevenue * margin;
+      const retainedRevenue = realizedRevenue * retention;
+      const companyValue = grossProfit * retention;
+      const incrementalGrowth = arr * expansion;
+      const marginAdjustedGrowth = Math.max(0, incrementalGrowth * margin * retention);
+
+      // commission basis
+      let basisAmount;
+      if (basis === 'booked') basisAmount = arr;
+      else if (basis === 'realized') basisAmount = realizedRevenue;
+      else if (basis === 'gp') basisAmount = grossProfit;
+      else basisAmount = retainedRevenue; // nrr
+
+      const attainment = quota > 0 ? basisAmount / quota : 0;
+      let commission;
+      if (basisAmount <= quota) {
+        commission = basisAmount * commissionRate;
+      } else {
+        commission = quota * commissionRate + (basisAmount - quota) * commissionRate * accel;
+      }
+
+      // kicker
+      let kickerBase = 0;
+      if (kickerBasis === 'contract') kickerBase = arr * annual;
+      else if (kickerBasis === 'incremental') kickerBase = incrementalGrowth;
+      else kickerBase = marginAdjustedGrowth; // margin
+      const kicker = kickerBase * kickerRate;
+
+      // renewal bonus — only credited if retained
+      const renewalBonus = retainedRevenue * renewalRate;
+
+      const grossPayout = basePay + commission + kicker + renewalBonus;
+
+      // payout timing adjustment (fraction of variable comp paid upfront)
+      let timingMult;
+      if (timing === 'upfront') timingMult = 1;
+      else if (timing === 'deferred') timingMult = 0.7 + 0.3 * retention; // defers, retention-weighted
+      else timingMult = 0.5 + 0.5 * retention; // milestone-gated
+
+      // clawback on early churn
+      let clawbackMult;
+      if (clawback === 'none') clawbackMult = 1;
+      else if (clawback === 'partial') clawbackMult = 1 - (1 - retention) * 0.5;
+      else clawbackMult = retention; // full
+
+      const variablePayout = (commission + kicker + renewalBonus) * timingMult * clawbackMult;
+      const repPayout = basePay + variablePayout;
+      const payoutToValue = companyValue > 0 ? repPayout / companyValue : Infinity;
+
+      scenarios.push({
+        arr, usage, annual, expansion, retention,
+        realizedRevenue, grossProfit, retainedRevenue, companyValue,
+        basisAmount, attainment, commission, kicker, renewalBonus, grossPayout,
+        repPayout, payoutToValue
+      });
+    }
+
+    // render scenario cards
+    const dur = scenarios[0], resh = scenarios[1], lowq = scenarios[2];
+    scenarios.forEach((s, i) => {
+      document.getElementById('sc-payout-' + i).textContent = fmt(s.repPayout);
+      document.getElementById('sc-value-' + i).textContent = fmt(s.companyValue);
+      document.getElementById('sc-ratio-' + i).textContent = isFinite(s.payoutToValue) ? s.payoutToValue.toFixed(2) + 'x' : '\u221e';
+    });
+
+    // misalignment verdict — does reshaping or low-quality beat durable growth in payout while losing in value?
+    const reshapingPaysMore = resh.repPayout > dur.repPayout * 1.02;
+    const lowqPaysMore = lowq.repPayout > dur.repPayout * 1.02;
+    const reshapingWorseValue = resh.companyValue <= dur.companyValue * 0.99;
+    const lowqWorseValue = lowq.companyValue <= dur.companyValue * 0.99;
+
+    const banner = document.getElementById('comp-misalign-banner');
+    let verdict, cls;
+    if ((reshapingPaysMore && reshapingWorseValue) || (lowqPaysMore && lowqWorseValue)) {
+      const worst = (lowqPaysMore && lowqWorseValue) ? lowq : resh;
+      const label = (lowqPaysMore && lowqWorseValue) ? 'low-quality growth' : 'contract reshaping';
+      const extraPay = worst.repPayout - dur.repPayout;
+      const lostVal = dur.companyValue - worst.companyValue;
+      verdict = '\u26A0 Misaligned: ' + label + ' pays the rep ' + fmt(extraPay) + ' more than durable growth while destroying ' + fmt(lostVal) + ' of company value. A rational rep chooses the worse outcome.';
+      cls = 'bad';
+    } else if (reshapingPaysMore || lowqPaysMore) {
+      verdict = '\u26A0 Borderline: a lower-value scenario pays slightly more, but company value holds. Tighten the plan before scaling it.';
+      cls = 'warn';
+    } else {
+      verdict = '\u2713 Aligned: durable growth pays the most and creates the most value. The plan rewards the right behavior.';
+      cls = 'good';
+    }
+    banner.textContent = verdict;
+    banner.className = 'misalign-banner ' + cls;
+
+    // alignment score (directional 0-100)
+    let score = 0;
+    // 30: commission basis quality
+    if (basis === 'gp') score += 30;
+    else if (basis === 'nrr') score += 22;
+    else if (basis === 'realized') score += 14;
+    // else booked: 0
+    // 20: payout timing
+    if (timing === 'milestone') score += 20;
+    else if (timing === 'deferred') score += 12;
+    // else upfront: 0
+    // 15: clawback
+    if (clawback === 'full') score += 15;
+    else if (clawback === 'partial') score += 8;
+    // 15: handoff
+    if (handoff === 'ramp') score += 15;
+    else if (handoff === 'activation') score += 9;
+    // 10: kicker basis
+    if (kickerRate === 0) score += 10;
+    else if (kickerBasis === 'margin') score += 8;
+    else if (kickerBasis === 'incremental') score += 5;
+    // else contract: 0
+    // 10: accelerator steepness
+    if (accel <= 1.5) score += 10;
+    else if (accel <= 2.5) score += 5;
+    score = Math.max(0, Math.min(100, Math.round(score)));
+
+    const arc = document.getElementById('comp-score-arc');
+    const circumference = 97.4;
+    arc.style.strokeDashoffset = (circumference * (1 - score / 100)).toFixed(1);
+    arc.style.stroke = score >= 70 ? 'var(--color-good)' : score >= 45 ? 'var(--color-gold)' : 'var(--color-bad)';
+    document.getElementById('comp-score-num').textContent = score + '/100';
+    document.getElementById('comp-score-desc').textContent = score >= 70
+      ? 'Strong alignment \u2014 the plan rewards durable, margin-positive growth.'
+      : score >= 45
+        ? 'Mixed \u2014 some gaming vectors are still open.'
+        : 'Weak \u2014 a rational rep can out-earn durable growth with lower-quality motion.';
+
+    // ── Findings (declarative rules) ──────────────────────────────────────────
+    const findings = [];
+
+    // 1. Conversion pump exposure
+    if (kickerRate >= 0.02 && kickerBasis === 'contract') {
+      findings.push({
+        severity: reshapingPaysMore && reshapingWorseValue ? 'high' : 'medium',
+        title: 'Conversion pump exposure',
+        vector: 'Your annual-conversion kicker pays on contract structure, not growth. A rational rep converts monthly usage to annual prepay to trigger the kicker &mdash; booking the same revenue with no net expansion.',
+        evidence: 'Kicker ' + pct(kickerRate) + ' paid on contract structure. Reshaping scenario rep payout: ' + fmt(resh.repPayout) + ' vs durable ' + fmt(dur.repPayout) + '.',
+        fix: 'Pay the kicker only on incremental, margin-adjusted growth, and gate it on realized usage. Cap conversion credit when there is no net expansion.'
+      });
+    }
+
+    // 2. Margin blind spot
+    if (basis === 'booked' && margin < 0.7) {
+      findings.push({
+        severity: 'high',
+        title: 'Margin blind spot',
+        vector: 'Commission is paid on booked ARR while gross margin is ' + pct(margin) + '. A rep can book heavily-discounted or low-margin deals and still hit quota &mdash; the company barely profits.',
+        evidence: 'Basis = booked ARR; gross margin ' + pct(margin) + '. Low-quality scenario company value: ' + fmt(lowq.companyValue) + ' on ' + fmt(lowq.arr) + ' booked.',
+        fix: 'Pay on gross profit or margin-adjusted revenue, or step the commission rate down below a margin floor.'
+      });
+    } else if (basis === 'booked') {
+      findings.push({
+        severity: 'medium',
+        title: 'Discount blind spot',
+        vector: 'Booked-ARR basis ignores discounting. A rep can discount aggressively to close and still earn full commission on the gross number.',
+        evidence: 'Basis = booked ARR; gross margin ' + pct(margin) + '.',
+        fix: 'Credit net revenue after discounts, or tie accelerator eligibility to a minimum deal margin.'
+      });
+    }
+
+    // 3. Payout-before-value risk
+    if (timing === 'upfront' && clawback === 'none') {
+      findings.push({
+        severity: 'high',
+        title: 'Payout-before-value risk',
+        vector: 'Commission pays upfront at close with no clawback. A rep can book churn-prone deals and keep full commission before usage is realized or retention is proven.',
+        evidence: 'Payout timing = upfront; clawback = none. Low-quality scenario retention only ' + pct(lowq.retention) + ' but rep still earns ' + fmt(lowq.repPayout) + '.',
+        fix: 'Vest a portion of commission after activation, usage ramp, or a retention milestone. Add clawback for early churn or severe contraction.'
+      });
+    } else if (timing === 'upfront') {
+      findings.push({
+        severity: 'low',
+        title: 'Payout-timing weakness',
+        vector: 'Payout is still upfront; the clawback softens churn risk but value realization is unproven at close.',
+        evidence: 'Payout timing = upfront; clawback = ' + clawback + '.',
+        fix: 'Move to milestone-gated or deferred payout so commission tracks value realization.'
+      });
+    }
+
+    // 4. Handoff gaming
+    if (handoff === 'immediate') {
+      findings.push({
+        severity: 'medium',
+        title: 'Handoff gaming',
+        vector: 'New-business rep gets full credit at close and hands off adoption risk immediately. They are rewarded for closing, not for durable adoption &mdash; the post-sale team inherits the risk.',
+        evidence: 'Handoff = immediate at close. Retention risk sits with a team that did not earn the commission.',
+        fix: 'Split credit across close, activation, and retained expansion. Define handoff SLAs and share credit through the first renewal window.'
+      });
+    }
+
+    // 5. Renewal hostage risk
+    if (renewalRate >= 0.02 && handoff === 'immediate') {
+      findings.push({
+        severity: 'medium',
+        title: 'Renewal hostage risk',
+        vector: 'A meaningful renewal bonus with an immediate handoff lets one owner control renewal credit. Reps can time renewals or avoid clean handoffs to maximize personal credit.',
+        evidence: 'Renewal bonus ' + pct(renewalRate) + '; handoff immediate; ownership of renewal/expansion unclear.',
+        fix: 'Pay on net retained revenue with shared credit. Separate renewal protection from true expansion creation.'
+      });
+    }
+
+    // 6. Quota cliff / sandbagging
+    if (accel >= 2.5) {
+      findings.push({
+        severity: 'medium',
+        title: 'Quota cliff / sandbagging',
+        vector: 'A ' + accel.toFixed(1) + 'x accelerator creates a sharp cliff at quota. Reps may delay deals or bunch contracts into one period to maximize accelerator economics.',
+        evidence: 'Accelerator ' + accel.toFixed(1) + 'x above quota.',
+        fix: 'Smooth the accelerator curve and use rolling attainment windows. Aggregate related customer contracts to reduce sandbagging leverage.'
+      });
+    }
+
+    // 7. Book curation
+    if (renewalRate >= 0.02) {
+      findings.push({
+        severity: 'low',
+        title: 'Book curation risk',
+        vector: 'Renewal/expansion bonuses on an existing book reward reps for picking easy expansion accounts and avoiding messy but strategic customers.',
+        evidence: 'Renewal bonus ' + pct(renewalRate) + '; no account-difficulty normalization in the plan.',
+        fix: 'Risk-adjust quotas and normalize books by install-base quality. Set baseline growth expectations by segment/cohort.'
+      });
+    }
+
+    // render findings
+    const list = document.getElementById('comp-risk-list');
+    if (findings.length === 0) {
+      list.innerHTML = '<div class="risk-card"><div class="risk-card-header"><span class="risk-severity low">clean</span><span class="risk-title">No major gaming vectors detected</span></div><div class="risk-body" style="display:block"><div class="risk-text">No high or medium incentive risks with this configuration. Edge cases (extreme discounts, very long handoffs) are still worth stress-testing manually.</div></div></div>';
+    } else {
+      list.innerHTML = findings.map(function (f, i) {
+        return '<div class="risk-card' + (i === 0 ? ' open' : '') + '">' +
+          '<div class="risk-card-header" onclick="this.parentElement.classList.toggle(\'open\')">' +
+            '<span class="risk-severity ' + f.severity + '">' + f.severity + '</span>' +
+            '<span class="risk-title">' + f.title + '</span>' +
+            '<span class="risk-chevron">\u25B6</span>' +
+          '</div>' +
+          '<div class="risk-body">' +
+            '<div class="risk-section">Gaming vector</div>' +
+            '<div class="risk-text">' + f.vector + '</div>' +
+            '<div class="risk-section">Evidence</div>' +
+            '<div class="risk-text">' + f.evidence + '</div>' +
+            '<div class="risk-section">Structural fix</div>' +
+            '<div class="risk-fix">' + f.fix + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+  }
+
   // ─── Copy results ─────────────────────────────────────────────────────────────
   function copyResults(tab) {
     let text = '';
@@ -1056,6 +1572,21 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
         '',
         'Analysis: ' + document.getElementById('signals-insight').textContent,
       ].join('\n');
+    } else if (tab === 'comp') {
+      const scNames = ['Durable growth', 'Contract reshaping', 'Low-quality growth'];
+      text = [
+        'COMP PLAN STRESS-TESTER',
+        '───────────────────────',
+        'Alignment score: ' + document.getElementById('comp-score-num').textContent,
+        'Verdict: ' + document.getElementById('comp-misalign-banner').textContent.trim(),
+        '',
+        'Scenario payouts:',
+        '  Durable growth:      ' + document.getElementById('sc-payout-0').textContent + ' (value ' + document.getElementById('sc-value-0').textContent + ')',
+        '  Contract reshaping:  ' + document.getElementById('sc-payout-1').textContent + ' (value ' + document.getElementById('sc-value-1').textContent + ')',
+        '  Low-quality growth:  ' + document.getElementById('sc-payout-2').textContent + ' (value ' + document.getElementById('sc-value-2').textContent + ')',
+        '',
+        'Risk findings: ' + document.getElementById('comp-risk-list').querySelectorAll('.risk-card').length + ' flagged',
+      ].join('\n');
     }
 
     navigator.clipboard.writeText(text).then(() => {
@@ -1071,10 +1602,34 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
     retention: { 'ret-start': 528000, 'ret-churn': 42000, 'ret-contraction': 18000, 'ret-expansion': 36000, 'ret-target': 1200000, 'ret-newlogo': 320000 },
     bridge: { 'b-opening': 528000, 'b-target': 1200000, 'b-newlogo': 320000, 'b-expansion': 36000, 'b-churn': 42000, 'b-contraction': 18000 },
     attribution: { 'a-mrr': 18200 },
-    signals: { 's-expmrr': 450, 's-churnmrr': 380 }
+    signals: { 's-expmrr': 450, 's-churnmrr': 380 },
+    comp: {
+      'comp-ote': 180000, 'comp-split': 50, 'comp-quota': 900000, 'comp-basis': 'booked',
+      'comp-accel': 1.5, 'comp-timing': 'upfront', 'comp-kicker': 5, 'comp-kicker-basis': 'contract',
+      'comp-renewal': 3, 'comp-handoff': 'immediate', 'comp-margin': 75, 'comp-clawback': 'none',
+      'comp-sc-0': '900000,92,35,15,94', 'comp-sc-1': '900000,92,85,2,94', 'comp-sc-2': '1150000,55,60,8,68'
+    }
   };
 
   function resetTab(tab) {
+    if (tab === 'comp') {
+      const d = defaults.comp;
+      Object.entries(d).forEach(([id, val]) => {
+        if (id.startsWith('comp-sc-')) return;
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      });
+      // restore scenario inputs
+      for (let i = 0; i < 3; i++) {
+        const parts = d['comp-sc-' + i].split(',');
+        ['arr','usage','annual','expansion','retention'].forEach((field, j) => {
+          const el = document.querySelector('.s-input[data-sc="' + i + '"][data-field="' + field + '"]');
+          if (el) el.value = parts[j];
+        });
+      }
+      calcComp();
+      return;
+    }
     const d = defaults[tab];
     Object.entries(d).forEach(([id, val]) => {
       const el = document.getElementById(id);
@@ -1093,6 +1648,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
   calcBridge();
   calcAttribution();
   calcSignals();
+  calcComp();
 </script>
 </body>
 </html>
