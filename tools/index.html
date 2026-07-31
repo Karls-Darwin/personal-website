@@ -477,7 +477,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
         <div class="tab-panel" id="tab-attribution">
 
           <h2>Free &rarr; paid conversion by feature batch</h2>
-          <p class="note" style="font-size:13px; color: var(--muted); margin-bottom: 1.25rem;">Group your product into discrete feature batches &mdash; the way a nav sidebar does &mdash; and see which one converts free accounts best. "Last touch" here means the batch a customer used most recently before they upgraded.</p>
+          <p class="note" style="font-size:13px; color: var(--muted); margin-bottom: 1.25rem;">Group your product into discrete feature batches, the way a nav sidebar does, and see which one converts free accounts best. "Last touch" here means the batch a customer used most recently before they upgraded.</p>
 
           <h3>Conversion totals</h3>
           <div class="field-group single">
@@ -591,7 +591,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
         <div class="tab-panel" id="tab-signals">
 
           <h2>Expansion &amp; churn signals</h2>
-          <p class="note" style="font-size:13px; color: var(--muted); margin-bottom: 1.25rem;">Score accounts on usage-based signals to flag who's about to expand and who's about to churn &mdash; before either one emails support. Built on the same event data usage-based billing already tracks: plan utilization, seats, activity trend, and recency.</p>
+          <p class="note" style="font-size:13px; color: var(--muted); margin-bottom: 1.25rem;">Score accounts on usage-based signals to flag who's about to expand and who's about to churn before either one emails support. Built on the same event data usage-based billing already tracks: plan utilization, seats, activity trend, and recency.</p>
 
           <h3>Dollar impact assumptions</h3>
           <div class="field-group">
@@ -723,7 +723,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
         <div class="tab-panel" id="tab-comp">
 
           <h2>Comp plan stress-tester</h2>
-          <p class="note" style="font-size:13px; color: var(--muted); margin-bottom: 1.25rem;">Configure a comp plan for a hypothetical usage-based SaaS company. The tool models how a rational rep would behave across three scenarios &mdash; durable growth, contract-reshaping, and low-quality growth &mdash; and flags where rep incentives diverge from company value, with the structural fix attached. Illustrative economics; designed to expose incentive risk, not prescribe a universal comp plan.</p>
+          <p class="note" style="font-size:13px; color: var(--muted); margin-bottom: 1.25rem;">Configure a comp plan for a hypothetical usage-based SaaS company. The tool models how a rational rep would behave across three scenarios (durable growth, contract-reshaping, and low-quality growth) and flags where rep incentives diverge from company value, with the structural fix attached. Illustrative economics; designed to expose incentive risk, not prescribe a universal comp plan.</p>
 
           <h3>Plan mechanics</h3>
           <p class="note">The sliders below define the plan. Everything is live: change a slider and the scenarios re-score.</p>
@@ -818,7 +818,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
             </div>
           </div>
 
-          <h3>Scenarios &mdash; same plan, three rep behaviors</h3>
+          <h3>Scenarios: same plan, three rep behaviors</h3>
           <p class="note">Each scenario is the same rep facing the same book. The only difference is which behavior the plan rewards more. Edit any cell to test your own case.</p>
           <div class="scenario-grid">
             <div class="scenario-card" id="sc-card-0">
@@ -902,7 +902,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
       <div class="grid grid-3" data-reveal data-delay="2" style="margin-top: var(--space-6)">
         <div class="card">
           <h3>Make data simple</h3>
-          <p>Build reliable, holistic reporting that cuts through unnecessary complexity, maintain a single source of truth, and surface the patterns that matter in customer behavior.</p>
+          <p>Build reliable, end-to-end reporting that cuts through unnecessary complexity, maintain a single source of truth, and surface the patterns that matter in customer behavior.</p>
         </div>
         <div class="card">
           <h3>Build for self-service</h3>
@@ -1417,7 +1417,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
       findings.push({
         severity: reshapingPaysMore && reshapingWorseValue ? 'high' : 'medium',
         title: 'Conversion pump exposure',
-        vector: 'Your annual-conversion kicker pays on contract structure, not growth. A rational rep converts monthly usage to annual prepay to trigger the kicker &mdash; booking the same revenue with no net expansion.',
+        vector: 'Your annual-conversion kicker pays on contract structure, not growth. A rational rep converts monthly usage to annual prepay to trigger the kicker, booking the same revenue with no net expansion.',
         evidence: 'Kicker ' + pct(kickerRate) + ' paid on contract structure. Reshaping scenario rep payout: ' + fmt(resh.repPayout) + ' vs durable ' + fmt(dur.repPayout) + '.',
         fix: 'Pay the kicker only on incremental, margin-adjusted growth, and gate it on realized usage. Cap conversion credit when there is no net expansion.'
       });
@@ -1428,7 +1428,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
       findings.push({
         severity: 'high',
         title: 'Margin blind spot',
-        vector: 'Commission is paid on booked ARR while gross margin is ' + pct(margin) + '. A rep can book heavily-discounted or low-margin deals and still hit quota &mdash; the company barely profits.',
+        vector: 'Commission is paid on booked ARR while gross margin is ' + pct(margin) + '. A rep can book heavily-discounted or low-margin deals and still hit quota while the company barely profits.',
         evidence: 'Basis = booked ARR; gross margin ' + pct(margin) + '. Low-quality scenario company value: ' + fmt(lowq.companyValue) + ' on ' + fmt(lowq.arr) + ' booked.',
         fix: 'Pay on gross profit or margin-adjusted revenue, or step the commission rate down below a margin floor.'
       });
@@ -1466,7 +1466,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
       findings.push({
         severity: 'medium',
         title: 'Handoff gaming',
-        vector: 'New-business rep gets full credit at close and hands off adoption risk immediately. They are rewarded for closing, not for durable adoption &mdash; the post-sale team inherits the risk.',
+        vector: 'New-business rep gets full credit at close and hands off adoption risk immediately. They are rewarded for closing, not for durable adoption, so the post-sale team inherits the risk.',
         evidence: 'Handoff = immediate at close. Retention risk sits with a team that did not earn the commission.',
         fix: 'Split credit across close, activation, and retained expansion. Define handoff SLAs and share credit through the first renewal window.'
       });
