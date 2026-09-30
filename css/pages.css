@@ -178,3 +178,58 @@
 
 /* ---------------- TOOLS (calculator chrome) ---------------- */
 .tools-intro { max-width: var(--content-default); }
+
+/* ==========================================================================
+   ATTENTION WIDGET (homepage "Where visitors click first", live PostHog data)
+   ========================================================================== */
+.attention-widget {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-sm);
+  max-width: 640px;
+}
+.attention-row { display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-4); }
+.attention-row:last-child { margin-bottom: 0; }
+.attention-label {
+  flex: 0 0 180px;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.attention-track {
+  flex: 1;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-offset);
+  overflow: hidden;
+}
+.attention-fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  transition: width 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.attention-pct {
+  flex: 0 0 40px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.attention-foot {
+  margin-top: var(--space-6);
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  font-family: var(--font-mono);
+}
+.attention-loading, .attention-empty { color: var(--color-text-muted); font-size: var(--text-sm); }
+
+@media (max-width: 640px) {
+  .attention-label { flex-basis: 108px; font-size: var(--text-xs); }
+}

@@ -122,6 +122,20 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
     </div>
   </section>
 
+  <!-- LIVE ANALYTICS -->
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow" data-reveal>Built with PostHog</span>
+      <h2 class="section-title" data-reveal data-delay="1">Where visitors click first</h2>
+      <p class="lede" data-reveal data-delay="2" style="margin-bottom: var(--space-8)">
+        A live look at my own product analytics: the first thing people click on this page, pulled straight from PostHog.
+      </p>
+      <div class="attention-widget" id="attentionWidget" data-reveal data-delay="3">
+        <p class="attention-loading">Loading live data…</p>
+      </div>
+    </div>
+  </section>
+
   <!-- THINGS I FIND FASCINATING -->
   <section class="section fascinate">
     <div class="wrap">
@@ -188,5 +202,6 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
 </main>
 
 <script src="js/site.js" defer></script>
+<script src="js/attention.js" defer></script>
 </body>
 </html>
