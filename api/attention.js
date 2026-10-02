@@ -6,9 +6,9 @@
 //   POSTHOG_API_KEY    - a PostHog Personal API Key, read-only query scope
 //   POSTHOG_PROJECT_ID - the PostHog project ID (Project Settings > General)
 // Optional:
-//   POSTHOG_HOST        - defaults to https://us.i.posthog.com
+//   POSTHOG_HOST        - defaults to https://us.posthog.com
 
-const HOST = process.env.POSTHOG_HOST || 'https://us.i.posthog.com';
+const HOST = process.env.POSTHOG_HOST || 'https://us.posthog.com';
 const PROJECT_ID = process.env.POSTHOG_PROJECT_ID;
 const API_KEY = process.env.POSTHOG_API_KEY;
 
