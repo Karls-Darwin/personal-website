@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recipe Grid · Karl Krecke</title>
+<meta name="description" content="Recipe Grid: paste a recipe link, text, or photo and get a clean recipe card plus an ingredient-by-step grid.">
+<link rel="canonical" href="https://karlkrecke.com/other-tools/recipe-grid/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Recipe Grid · Karl Krecke">
+<meta property="og:description" content="Turn any recipe into a clean card and an ingredient-by-step grid.">
+<meta property="og:url" content="https://karlkrecke.com/other-tools/recipe-grid/">
+<meta property="og:image" content="https://karlkrecke.com/assets/img/hero-network.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<script>(function(){try{var s=window['local'+'Storage'];var t=s&&s.getItem('kk-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<!-- Vercel Web Analytics -->
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<!-- PostHog -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only' });
+</script>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,500&f[]=general-sans@400,500,600&f[]=space-mono@400,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/base.css">
+<link rel="stylesheet" href="../../css/components.css">
+<link rel="stylesheet" href="../../css/pages.css">
+<style>
+  .rg-panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg, 14px); padding: var(--space-6); }
+  .rg-tabs { display: flex; gap: 0.35rem; margin-bottom: var(--space-4); flex-wrap: wrap; }
+  .rg-tab { font: inherit; font-size: var(--text-sm); font-weight: 500; padding: 0.5em 1em; border-radius: var(--radius-full); border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted); cursor: pointer; }
+  .rg-tab[aria-selected="true"] { background: var(--color-primary-soft); color: var(--color-primary); border-color: var(--color-primary); }
+  .rg-input { width: 100%; font: inherit; color: var(--color-text); background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 0.8em 1em; }
+  .rg-input:focus { outline: 2px solid var(--color-teal); outline-offset: 1px; }
+  textarea.rg-input { min-height: 220px; resize: vertical; font-family: var(--font-mono); font-size: var(--text-sm); }
+  .rg-drop { border: 2px dashed var(--color-border); border-radius: var(--radius-md); padding: var(--space-8); text-align: center; color: var(--color-text-muted); cursor: pointer; }
+  .rg-drop.drag { border-color: var(--color-teal); background: var(--color-teal-soft); }
+  .rg-thumbs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: var(--space-3); }
+  .rg-thumbs img { width: 84px; height: 84px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--color-border); }
+  .rg-actions { display: flex; gap: var(--space-3); align-items: center; margin-top: var(--space-4); flex-wrap: wrap; }
+  .rg-status { font-size: var(--text-sm); color: var(--color-text-muted); }
+  .rg-status.err { color: var(--color-bad); }
+  .rg-hint { font-size: var(--text-xs); color: var(--color-text-faint); margin-top: var(--space-2); }
+  [hidden] { display: none !important; }
+
+  .rg-out { margin-top: var(--space-10); display: grid; gap: var(--space-6); }
+  .rg-title { font-family: var(--font-display); font-size: var(--text-2xl, 2rem); line-height: 1.1; }
+  .rg-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: var(--space-3); }
+  .rg-chip { font-family: var(--font-mono); font-size: var(--text-xs); padding: 0.35em 0.8em; border-radius: var(--radius-full); background: var(--color-teal-soft); color: var(--color-teal); }
+  .rg-cols { display: grid; grid-template-columns: 1fr 1.4fr; gap: var(--space-6); }
+  @media (max-width: 860px) { .rg-cols { grid-template-columns: 1fr; } }
+  .rg-panel h3 { font-family: var(--font-display); font-size: var(--text-lg, 1.25rem); margin-bottom: var(--space-3); }
+  .rg-list { display: grid; gap: 0.5rem; padding: 0; list-style: none; }
+  .rg-list li { display: flex; gap: 0.6rem; align-items: baseline; }
+  .rg-check { accent-color: var(--color-teal); }
+  .rg-qty { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--color-primary); min-width: 5.5em; }
+  .rg-prep { color: var(--color-text-muted); font-size: var(--text-sm); }
+  .rg-group { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-faint); margin-top: var(--space-3); }
+  .rg-steps { counter-reset: s; display: grid; gap: var(--space-4); padding: 0; list-style: none; }
+  .rg-steps li { counter-increment: s; display: grid; grid-template-columns: 2rem 1fr; gap: 0.75rem; }
+  .rg-steps li::before { content: counter(s); font-family: var(--font-mono); font-weight: 700; color: var(--color-text-inverse); background: var(--color-primary); width: 1.9rem; height: 1.9rem; border-radius: 50%; display: grid; place-items: center; font-size: var(--text-sm); }
+  .rg-steps .rg-action { font-weight: 600; display: block; }
+
+  .rg-grid-wrap { overflow-x: auto; }
+  .rg-grid { border-collapse: separate; border-spacing: 0; font-size: var(--text-sm); min-width: 100%; }
+  .rg-grid th, .rg-grid td { border-bottom: 1px solid var(--color-divider); padding: 0.5em 0.6em; text-align: center; }
+  .rg-grid thead th { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-muted); vertical-align: bottom; white-space: nowrap; }
+  .rg-grid thead th span { display: block; color: var(--color-primary); }
+  .rg-grid tbody th { text-align: left; font-weight: 500; white-space: nowrap; position: sticky; left: 0; background: var(--color-surface); }
+  .rg-dot { display: inline-block; width: 0.8rem; height: 0.8rem; border-radius: 50%; background: var(--color-teal); }
+  .rg-grid td.first .rg-dot { background: var(--color-primary); }
+  .rg-grid tr:hover th, .rg-grid tr:hover td { background: var(--color-surface-offset); }
+  .rg-legend { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-3); display: flex; gap: var(--space-4); }
+  .rg-legend .rg-dot { width: 0.6rem; height: 0.6rem; vertical-align: middle; margin-right: 0.3em; }
+  @media print { .site-header, .site-footer, .page-hero, #rgForm, .rg-actions-out { display: none !important; } .rg-out { margin-top: 0; } }
+</style>
+</head>
+<body data-page="recipe-grid">
+
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow" data-reveal>Other tools</span>
+      <h1 data-reveal data-delay="1">Recipe Grid</h1>
+      <p class="lede" data-reveal data-delay="2">
+        Recipe blogs bury the recipe. Give this a link, pasted text, or a photo of a cookbook page and it
+        returns a clean card: what to prep first, what you need, the steps, and a grid of which ingredient goes in at which step.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: var(--space-4)">
+    <div class="wrap">
+      <form class="rg-panel" id="rgForm" data-reveal>
+        <div class="rg-tabs" role="tablist">
+          <button type="button" class="rg-tab" role="tab" data-mode="url" aria-selected="true">Link</button>
+          <button type="button" class="rg-tab" role="tab" data-mode="text" aria-selected="false">Paste text</button>
+          <button type="button" class="rg-tab" role="tab" data-mode="image" aria-selected="false">Photos</button>
+        </div>
+
+        <div data-pane="url">
+          <input class="rg-input" type="url" id="rgUrl" placeholder="https://www.example.com/best-banana-bread" autocomplete="off">
+          <p class="rg-hint">Some sites block automated requests. If a link fails, copy the recipe and use Paste text.</p>
+        </div>
+        <div data-pane="text" hidden>
+          <textarea class="rg-input" id="rgText" placeholder="Paste the ingredients and directions here"></textarea>
+        </div>
+        <div data-pane="image" hidden>
+          <label class="rg-drop" id="rgDrop">
+            <input type="file" id="rgFiles" accept="image/*" multiple hidden>
+            Drop up to 4 photos here, or click to choose
+          </label>
+          <div class="rg-thumbs" id="rgThumbs"></div>
+        </div>
+
+        <div class="rg-actions">
+          <button type="submit" class="btn btn-primary" id="rgGo">Format recipe</button>
+          <button type="button" class="btn btn-ghost" id="rgSample">Try a sample</button>
+          <span class="rg-status" id="rgStatus" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+
+      <div class="rg-out" id="rgOut" hidden>
+        <div>
+          <h2 class="rg-title" id="rgTitle"></h2>
+          <p class="rg-prep" id="rgDesc" style="margin-top: var(--space-2)"></p>
+          <div class="rg-meta" id="rgMeta"></div>
+        </div>
+
+        <div class="rg-panel" id="rgMiseWrap">
+          <h3>Mise en place</h3>
+          <ul class="rg-list" id="rgMise"></ul>
+        </div>
+
+        <div class="rg-cols">
+          <div class="rg-panel">
+            <h3>Ingredients</h3>
+            <div id="rgIngr"></div>
+          </div>
+          <div class="rg-panel">
+            <h3>Steps</h3>
+            <ol class="rg-steps" id="rgSteps"></ol>
+          </div>
+        </div>
+
+        <div class="rg-panel">
+          <h3>Ingredient × step grid</h3>
+          <div class="rg-grid-wrap"><table class="rg-grid" id="rgGrid"></table></div>
+          <div class="rg-legend"><span><span class="rg-dot" style="background:var(--color-primary)"></span>First use</span><span><span class="rg-dot"></span>Used again</span></div>
+        </div>
+
+        <div class="rg-panel" id="rgNotesWrap" hidden>
+          <h3>Notes</h3>
+          <ul class="rg-list" id="rgNotes"></ul>
+        </div>
+
+        <div class="rg-actions rg-actions-out">
+          <button type="button" class="btn btn-ghost" onclick="window.print()">Print</button>
+          <button type="button" class="btn btn-ghost" id="rgCopy">Copy as text</button>
+          <button type="button" class="btn btn-ghost" id="rgJson">Download JSON</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var mode = 'url', images = [], last = null;
+  var $ = function (id) { return document.getElementById(id); };
+  var status = $('rgStatus');
+
+  var SAMPLE = "Simple Garlic Butter Pasta\nServes 2. 20 minutes.\n\n8 oz spaghetti\n3 tbsp butter\n4 cloves garlic, minced\n1/4 tsp red pepper flakes\n1/2 cup grated parmesan\n2 tbsp chopped parsley\nSalt\n\n1. Boil the spaghetti in well-salted water until al dente. Save 1/2 cup pasta water, then drain.\n2. Melt the butter in a large skillet over medium heat. Add garlic and red pepper flakes and cook 1 minute.\n3. Add the pasta and a splash of pasta water. Toss until glossy.\n4. Off the heat, stir in parmesan and parsley. Season with salt and serve.";
+
+  document.querySelectorAll('.rg-tab').forEach(function (t) {
+    t.addEventListener('click', function () { setMode(t.dataset.mode); });
+  });
+  function setMode(m) {
+    mode = m;
+    document.querySelectorAll('.rg-tab').forEach(function (t) { t.setAttribute('aria-selected', t.dataset.mode === m ? 'true' : 'false'); });
+    document.querySelectorAll('[data-pane]').forEach(function (p) { p.hidden = p.dataset.pane !== m; });
+  }
+
+  // Photos: shrink client-side so uploads stay under Vercel's request size limit.
+  function shrink(file) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image(), url = URL.createObjectURL(file);
+      img.onload = function () {
+        var max = 1568, s = Math.min(1, max / Math.max(img.width, img.height));
+        var c = document.createElement('canvas');
+        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        resolve(c.toDataURL('image/jpeg', 0.82));
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
+  }
+  function addFiles(list) {
+    var files = [].slice.call(list).filter(function (f) { return /^image\//.test(f.type); }).slice(0, 4 - images.length);
+    Promise.all(files.map(shrink)).then(function (urls) {
+      images = images.concat(urls).slice(0, 4);
+      $('rgThumbs').innerHTML = images.map(function (u) { return '<img src="' + u + '" alt="">'; }).join('');
+    });
+  }
+  $('rgFiles').addEventListener('change', function (e) { addFiles(e.target.files); });
+  var drop = $('rgDrop');
+  ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('drag'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('drag'); }); });
+  drop.addEventListener('drop', function (e) { addFiles(e.dataTransfer.files); });
+
+  $('rgSample').addEventListener('click', function () { setMode('text'); $('rgText').value = SAMPLE; });
+
+  $('rgForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var body = { mode: mode };
+    if (mode === 'url') body.url = $('rgUrl').value.trim();
+    if (mode === 'text') body.text = $('rgText').value;
+    if (mode === 'image') body.images = images;
+    $('rgGo').disabled = true;
+    setStatus('Reading the recipe… this usually takes 10–20 seconds.');
+    fetch('/api/convert', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return { error: 'Unexpected response (' + r.status + ').' }; }); })
+      .then(function (d) {
+        if (d.error) throw new Error(d.error);
+        setStatus('');
+        render(d.recipe);
+        if (window.posthog) posthog.capture('recipe_grid_converted', { mode: mode });
+      })
+      .catch(function (err) { setStatus(err.message, true); })
+      .then(function () { $('rgGo').disabled = false; });
+  });
+  function setStatus(msg, err) { status.textContent = msg; status.classList.toggle('err', !!err); }
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function qty(i) { return [i.quantity, i.unit].filter(Boolean).join(' '); }
+
+  function render(r) {
+    last = r;
+    $('rgTitle').textContent = r.title || 'Recipe';
+    $('rgDesc').textContent = r.description || '';
+    var meta = [['Serves', r.servings], ['Prep', r.prep_time], ['Cook', r.cook_time], ['Total', r.total_time]]
+      .filter(function (m) { return m[1]; });
+    $('rgMeta').innerHTML = meta.map(function (m) { return '<span class="rg-chip">' + m[0] + ' · ' + esc(m[1]) + '</span>'; }).join('');
+
+    var mise = r.mise_en_place || [];
+    $('rgMiseWrap').hidden = !mise.length;
+    $('rgMise').innerHTML = mise.map(function (m) { return '<li><input type="checkbox" class="rg-check"> <span>' + esc(m) + '</span></li>'; }).join('');
+
+    var ingr = r.ingredients || [], html = '', group = null;
+    ingr.forEach(function (i) {
+      if ((i.group || '') !== (group || '')) {
+        if (group !== null || i.group) { if (html) html += '</ul>'; html += '<div class="rg-group">' + esc(i.group || 'Other') + '</div><ul class="rg-list">'; }
+        group = i.group || '';
+      }
+      if (!html) html = '<ul class="rg-list">';
+      html += '<li><input type="checkbox" class="rg-check"><span class="rg-qty">' + esc(qty(i)) + '</span><span>' + esc(i.name) +
+        (i.prep ? '<span class="rg-prep">, ' + esc(i.prep) + '</span>' : '') + '</span></li>';
+    });
+    $('rgIngr').innerHTML = html + '</ul>';
+
+    var steps = r.steps || [];
+    $('rgSteps').innerHTML = steps.map(function (s) {
+      return '<li><div><span class="rg-action">' + esc(s.action) + '</span>' + esc(s.text) + '</div></li>';
+    }).join('');
+
+    // Grid: ingredients as rows, steps as columns. First use highlighted.
+    var head = '<thead><tr><th></th>' + steps.map(function (s, n) { return '<th><span>' + (n + 1) + '</span>' + esc(s.action) + '</th>'; }).join('') + '</tr></thead>';
+    var rows = ingr.map(function (i) {
+      var seen = false;
+      return '<tr><th>' + esc(i.name) + '</th>' + steps.map(function (s) {
+        var used = (s.ingredient_ids || []).indexOf(i.id) !== -1;
+        var cls = used && !seen ? ' class="first"' : '';
+        if (used) seen = true;
+        return '<td' + cls + '>' + (used ? '<span class="rg-dot" title="' + esc(i.name + ' in step: ' + s.action) + '"></span>' : '') + '</td>';
+      }).join('') + '</tr>';
+    }).join('');
+    $('rgGrid').innerHTML = head + '<tbody>' + rows + '</tbody>';
+
+    var notes = r.notes || [];
+    $('rgNotesWrap').hidden = !notes.length;
+    $('rgNotes').innerHTML = notes.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('');
+
+    $('rgOut').hidden = false;
+    $('rgOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  $('rgCopy').addEventListener('click', function () {
+    if (!last) return;
+    var t = [last.title, ''];
+    if ((last.mise_en_place || []).length) t.push('MISE EN PLACE', last.mise_en_place.map(function (m) { return '- ' + m; }).join('\n'), '');
+    t.push('INGREDIENTS', (last.ingredients || []).map(function (i) { return '- ' + [qty(i), i.name].filter(Boolean).join(' ') + (i.prep ? ', ' + i.prep : ''); }).join('\n'), '');
+    t.push('STEPS', (last.steps || []).map(function (s, n) { return (n + 1) + '. ' + s.text; }).join('\n'));
+    navigator.clipboard.writeText(t.join('\n')).then(function () { setStatus('Copied.'); });
+  });
+  $('rgJson').addEventListener('click', function () {
+    if (!last) return;
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(last, null, 2)], { type: 'application/json' }));
+    a.download = (last.title || 'recipe').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.json';
+    a.click();
+  });
+})();
+</script>
+<script src="../../js/site.js" defer></script>
+</body>
+</html>
