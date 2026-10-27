@@ -18,7 +18,7 @@ Personal website for Karl Krecke — a static HTML/CSS site hosted on Vercel.
 ## Analytics
 
 - **Vercel Web Analytics** — via the official `/_vercel/insights/script.js` injection (active only in the Vercel-hosted environment).
-- **PostHog** — product analytics via the standard JS snippet.
+- **PostHog** — product analytics via the standard JS snippet, with `capture_exceptions: true` so browser errors show up in Error Tracking. `api/attention.js` also reports its own failures.
 
 No Google Analytics.
 

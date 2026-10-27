@@ -7,6 +7,7 @@
 //   POSTHOG_PROJECT_ID - the PostHog project ID (Project Settings > General)
 // Optional:
 //   POSTHOG_HOST        - defaults to https://us.posthog.com
+//   POSTHOG_INGEST_HOST - defaults to https://us.i.posthog.com (error reporting)
 
 const HOST = process.env.POSTHOG_HOST || 'https://us.posthog.com';
 const PROJECT_ID = process.env.POSTHOG_PROJECT_ID;
@@ -43,6 +44,36 @@ LIMIT 8
 let cache = { data: null, ts: 0 };
 const CACHE_MS = 6 * 60 * 60 * 1000; // 6 hours
 
+// Sends server-side failures to PostHog Error Tracking. Uses the public
+// project token (the same one in the page snippet), so no secret is needed.
+const INGEST_HOST = process.env.POSTHOG_INGEST_HOST || 'https://us.i.posthog.com';
+const PROJECT_TOKEN = 'phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5';
+
+async function reportError(err, extra) {
+  try {
+    await fetch(INGEST_HOST + '/i/v0/e/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_key: PROJECT_TOKEN,
+        event: '$exception',
+        distinct_id: 'server-api-attention',
+        properties: Object.assign({
+          $exception_list: [{
+            type: err.name || 'Error',
+            value: err.message || String(err),
+            mechanism: { handled: true, synthetic: false }
+          }],
+          $exception_stack_trace_raw: err.stack || '',
+          $process_person_profile: false,
+          source: 'api/attention'
+        }, extra || {})
+      })
+    });
+  } catch (e) {
+    // Never let error reporting break the endpoint.
+  }
+}
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'public, s-maxage=21600, stale-while-revalidate=86400');
   res.setHeader('Content-Type', 'application/json');
@@ -68,6 +99,7 @@ module.exports = async (req, res) => {
     });
 
     if (!r.ok) {
+      await reportError(new Error('PostHog query failed with status ' + r.status), { status: r.status });
       res.status(200).end(JSON.stringify({ ready: false, reason: 'query_failed' }));
       return;
     }
@@ -95,6 +127,7 @@ module.exports = async (req, res) => {
     cache = { data: payload, ts: Date.now() };
     res.status(200).end(JSON.stringify(payload));
   } catch (err) {
+    await reportError(err);
     res.status(200).end(JSON.stringify({ ready: false, reason: 'error' }));
   }
 };
