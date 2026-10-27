@@ -60,6 +60,26 @@ main { display: block; }
 }
 .nav-links a:hover { color: var(--color-text); background: var(--color-surface-offset); }
 .nav-links a[aria-current="page"] { color: var(--color-primary); background: var(--color-primary-soft); }
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle {
+  display: inline-flex; align-items: center; gap: 0.3em; font: inherit; cursor: pointer; border: 0; background: transparent;
+  color: var(--color-text-muted); font-size: var(--text-sm); font-weight: 500;
+  padding: 0.45em 0.75em; border-radius: var(--radius-full);
+}
+.nav-dropdown-toggle:hover, .nav-dropdown.open .nav-dropdown-toggle { color: var(--color-text); background: var(--color-surface-offset); }
+.nav-dropdown.is-active .nav-dropdown-toggle { color: var(--color-primary); background: var(--color-primary-soft); }
+.nav-caret { width: 0.75em; height: 0.75em; transition: transform var(--transition-interactive); }
+.nav-dropdown.open .nav-caret, .nav-dropdown:hover .nav-caret { transform: rotate(180deg); }
+.nav-dropdown-menu {
+  position: absolute; right: 0; top: 100%; min-width: 190px; padding: 0.4rem; margin-top: 0.35rem;
+  display: none; flex-direction: column; gap: 0.15rem; z-index: 60;
+  background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-md);
+}
+.nav-dropdown-menu::before { content: ""; position: absolute; left: 0; right: 0; top: -0.5rem; height: 0.5rem; }
+.nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown.open .nav-dropdown-menu { display: flex; }
+.nav-dropdown-menu a { border-radius: var(--radius-sm, 6px); }
+.mobile-group-label { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-faint); padding: 0.9em 0.5em 0.2em; }
+.mobile-menu a.mobile-sub { padding-left: 1.25em; }
 .header-actions { display: flex; align-items: center; gap: 0.4rem; }
 .theme-toggle {
   width: 38px; height: 38px; border-radius: var(--radius-full); display: grid; place-items: center;

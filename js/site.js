@@ -10,18 +10,20 @@
      /dogs/, /places/, /tools/ (each a directory with index.html). We compute
      how many directory levels deep the current page sits relative to the
      site root and build a relative prefix ('', '../', '../../', ...). ---- */
-  var SECTIONS = ['work', 'projects', 'about', 'dogs', 'places', 'tools'];
+  var SECTIONS = ['work', 'projects', 'about', 'dogs', 'places', 'tools', 'other-tools'];
   var BASE = (function () {
     var path = location.pathname.replace(/\/index\.html?$/i, '/');
     // strip trailing filename if any
     if (!/\/$/.test(path)) path = path.replace(/[^/]*$/, '');
     var segs = path.split('/').filter(Boolean);
-    // depth = number of trailing segments that are known sections
-    var depth = 0;
-    for (var i = segs.length - 1; i >= 0; i--) {
-      if (SECTIONS.indexOf(segs[i]) !== -1) { depth++; break; }
+    // depth = segments from the first known section to the end
+    // (e.g. /other-tools/recipe-grid/ is 2 levels deep)
+    for (var i = 0; i < segs.length; i++) {
+      if (SECTIONS.indexOf(segs[i]) !== -1) {
+        return new Array(segs.length - i + 1).join('../');
+      }
     }
-    return depth === 0 ? '' : '../';
+    return '';
   })();
 
   var NAV = [
@@ -30,7 +32,10 @@
     { href: BASE + 'projects/index.html', label: 'Projects', key: 'projects' },
     { href: BASE + 'about/index.html', label: 'About', key: 'about' },
     { href: BASE + 'dogs/index.html', label: 'Dogs', key: 'dogs' },
-    { href: BASE + 'tools/index.html', label: 'Tools', key: 'tools' }
+    { href: BASE + 'tools/index.html', label: 'Tools (Revops)', key: 'tools' },
+    { label: 'Other tools', key: 'other-tools', children: [
+      { href: BASE + 'other-tools/recipe-grid/index.html', label: 'Recipe Grid', key: 'recipe-grid' }
+    ] }
   ];
 
   var LOGO = '<svg class="logo-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">' +
@@ -48,9 +53,28 @@
   /* ---- Header ---- */
   var header = document.createElement('header');
   header.className = 'site-header';
-  var links = NAV.map(function (n) {
+  var CARET = '<svg class="nav-caret" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function link(n) {
     var is = n.key === active ? ' aria-current="page"' : '';
     return '<a href="' + n.href + '"' + is + '>' + n.label + '</a>';
+  }
+  function childActive(n) {
+    return n.children.some(function (c) { return c.key === active; });
+  }
+  // Desktop: dropdown. Children marked with data-page on body (e.g. "recipe-grid").
+  var links = NAV.map(function (n) {
+    if (!n.children) return link(n);
+    var on = childActive(n) ? ' is-active' : '';
+    return '<div class="nav-dropdown' + on + '">' +
+      '<button type="button" class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">' + n.label + CARET + '</button>' +
+      '<div class="nav-dropdown-menu" role="menu">' + n.children.map(link).join('') + '</div>' +
+    '</div>';
+  }).join('');
+  // Mobile: flat list with a small group label.
+  var mobileLinks = NAV.map(function (n) {
+    if (!n.children) return link(n);
+    return '<span class="mobile-group-label">' + n.label + '</span>' +
+      n.children.map(function (c) { return link(c).replace('<a ', '<a class="mobile-sub" '); }).join('');
   }).join('');
 
   header.innerHTML =
@@ -64,8 +88,30 @@
         '<button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>' +
       '</div>' +
     '</div>' +
-    '<div class="mobile-menu" id="mobileMenu">' + links + '</div>';
+    '<div class="mobile-menu" id="mobileMenu">' + mobileLinks + '</div>';
   document.body.insertBefore(header, document.body.firstChild);
+
+  /* ---- Dropdowns: hover on desktop via CSS, click/keyboard via JS ---- */
+  var drops = header.querySelectorAll('.nav-dropdown');
+  function closeAll(except) {
+    drops.forEach(function (d) {
+      if (d === except) return;
+      d.classList.remove('open');
+      d.querySelector('.nav-dropdown-toggle').setAttribute('aria-expanded', 'false');
+    });
+  }
+  drops.forEach(function (d) {
+    var btn = d.querySelector('.nav-dropdown-toggle');
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = !d.classList.contains('open');
+      closeAll(d);
+      d.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  });
+  document.addEventListener('click', function () { closeAll(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
 
   /* ---- Footer ---- */
   var footer = document.createElement('footer');
