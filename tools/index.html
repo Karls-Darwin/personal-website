@@ -971,7 +971,29 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
     btn.classList.add('active');
+    if (window.kkTrack) kkTrack('calculator_tab_viewed', { tab: TAB_EVENT_NAMES[name] || name });
   }
+
+  // PostHog names for each tab (internal ids are short).
+  const TAB_EVENT_NAMES = {
+    pipeline: 'pipeline_forecast', retention: 'retention_nrr', bridge: 'revenue_bridge',
+    attribution: 'conversion_attribution', signals: 'expansion_churn', comp: 'comp_stress_test'
+  };
+
+  // calculator_used: once per tab per browser session, on the first input change
+  // (not on every keystroke).
+  document.addEventListener('input', function (e) {
+    const panel = e.target.closest && e.target.closest('.tab-panel');
+    if (!panel || !window.kkTrack) return;
+    const name = panel.id.replace(/^tab-/, '');
+    const key = 'kk-calc-used-' + name;
+    let seen = false;
+    try { seen = sessionStorage.getItem(key) === '1'; sessionStorage.setItem(key, '1'); } catch (err) {
+      seen = !!usedThisPage[name]; usedThisPage[name] = true;
+    }
+    if (!seen) kkTrack('calculator_used', { tab: TAB_EVENT_NAMES[name] || name });
+  });
+  const usedThisPage = {};
 
   // ─── Pipeline calculator ──────────────────────────────────────────────────────
   function calcPipeline() {
