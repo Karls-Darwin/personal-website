@@ -13,6 +13,7 @@ const http = require('http');
 const https = require('https');
 const net = require('net');
 const zlib = require('zlib');
+const { reportError } = require('./_posthog');
 
 const API_KEY = process.env.ANTHROPIC_API_KEY;
 const MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5';
@@ -107,7 +108,8 @@ function htmlToText(html) {
 // the connection is actually made (not just when the URL is read), so DNS
 // tricks and redirects to internal addresses are blocked too.
 
-// Errors with a message that is safe to show the visitor.
+// Errors caused by the visitor's input (bad link, blocked page). Their message
+// is shown to the visitor, and they are not sent to Error Tracking.
 class UserError extends Error {}
 
 const MAX_REDIRECTS = 5;
@@ -231,7 +233,10 @@ module.exports = async (req, res) => {
   const send = (code, obj) => res.status(code).end(JSON.stringify(obj));
 
   if (req.method !== 'POST') return send(405, { error: 'Use POST.' });
-  if (!API_KEY) return send(503, { error: 'The tool isn\'t configured yet.' });
+  if (!API_KEY) {
+    await reportError(new Error('ANTHROPIC_API_KEY is not set'), 'api/convert');
+    return send(503, { error: 'The tool isn\'t configured yet.' });
+  }
 
   // Vercel sets x-real-ip itself, so visitors can't fake it to dodge the limit.
   const ip = String(req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
@@ -286,7 +291,9 @@ module.exports = async (req, res) => {
       signal: AbortSignal.timeout(55000)
     });
     if (!r.ok) {
-      console.error('Anthropic error', r.status, await r.text());
+      const detail = await r.text();
+      console.error('Anthropic error', r.status, detail);
+      await reportError(new Error('Anthropic API error ' + r.status + ': ' + detail.slice(0, 300)), 'api/convert', { status: r.status, model: MODEL });
       return send(502, { error: 'The recipe model had a problem. Try again in a minute.' });
     }
     const data = await r.json();
@@ -296,12 +303,14 @@ module.exports = async (req, res) => {
     let recipe;
     try { recipe = JSON.parse(replyText); } catch (e) {
       console.error('Unparseable recipe JSON', data.stop_reason, replyText.slice(0, 200));
+      await reportError(new Error('Anthropic reply was not valid recipe JSON'), 'api/convert', { model: MODEL, stop_reason: data.stop_reason });
       return send(502, { error: 'Couldn\'t read a recipe from that.' });
     }
     return send(200, { recipe });
   } catch (err) {
     if (err instanceof UserError) return send(400, { error: err.message });
     console.error('convert error', err);
+    await reportError(err, 'api/convert');
     return send(500, { error: 'Something went wrong. Try again in a minute.' });
   }
 };

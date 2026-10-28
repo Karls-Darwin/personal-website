@@ -43,6 +43,8 @@ LIMIT 8
 let cache = { data: null, ts: 0 };
 const CACHE_MS = 6 * 60 * 60 * 1000; // 6 hours
 
+const { reportError } = require('./_posthog');
+
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'public, s-maxage=21600, stale-while-revalidate=86400');
   res.setHeader('Content-Type', 'application/json');
@@ -68,6 +70,8 @@ module.exports = async (req, res) => {
     });
 
     if (!r.ok) {
+
+      await reportError(new Error('PostHog query failed with status ' + r.status), 'api/attention', { status: r.status });
       res.status(200).end(JSON.stringify({ ready: false, reason: 'query_failed' }));
       return;
     }
@@ -95,6 +99,7 @@ module.exports = async (req, res) => {
     cache = { data: payload, ts: Date.now() };
     res.status(200).end(JSON.stringify(payload));
   } catch (err) {
+    await reportError(err, 'api/attention');
     res.status(200).end(JSON.stringify({ ready: false, reason: 'error' }));
   }
 };
