@@ -186,4 +186,35 @@
   } else {
     reveals.forEach(function (el) { el.classList.add('is-visible'); });
   }
+
+  /* ---- PostHog events ----
+     Event names are object_action in snake_case. No personal data goes in
+     event properties. */
+  function track(event, props) {
+    try { if (window.posthog && posthog.capture) posthog.capture(event, props || {}); } catch (e) {}
+  }
+
+  // Super property: every event from this page carries which section it came from.
+  try { if (window.posthog && posthog.register) posthog.register({ site_section: active || 'home' }); } catch (e) {}
+
+  // Visitor intent: résumé, contact, and project links (header, footer, and page content).
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    var where = a.closest('.site-footer') ? 'footer' : 'page';
+    if (/Resume\.pdf$/i.test(href)) {
+      track('resume_downloaded', { location: where });
+    } else if (/^mailto:/i.test(href)) {
+      track('contact_clicked', { method: 'email', location: where });
+    } else if (/linkedin\.com/i.test(href) && !/recommendations/i.test(href)) {
+      track('contact_clicked', { method: 'linkedin', location: where });
+    } else if (/github\.com/i.test(href)) {
+      track('contact_clicked', { method: 'github', location: where });
+    } else if (a.hasAttribute('data-project')) {
+      track('project_opened', { project_name: a.getAttribute('data-project') });
+    }
+  });
+
+  window.kkTrack = track;
 })();
