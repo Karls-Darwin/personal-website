@@ -27,14 +27,14 @@
   })();
 
   var NAV = [
-    { href: BASE + 'index.html', label: 'Home', key: 'home' },
-    { href: BASE + 'work/index.html', label: 'Work', key: 'work' },
-    { href: BASE + 'projects/index.html', label: 'Projects', key: 'projects' },
-    { href: BASE + 'about/index.html', label: 'About', key: 'about' },
-    { href: BASE + 'dogs/index.html', label: 'Dogs', key: 'dogs' },
-    { href: BASE + 'tools/index.html', label: 'Tools (Revops)', key: 'tools' },
+    { href: BASE || './', label: 'Home', key: 'home' },
+    { href: BASE + 'work/', label: 'Work', key: 'work' },
+    { href: BASE + 'projects/', label: 'Projects', key: 'projects' },
+    { href: BASE + 'about/', label: 'About', key: 'about' },
+    { href: BASE + 'dogs/', label: 'Dogs', key: 'dogs' },
+    { href: BASE + 'tools/', label: 'Tools (Revops)', key: 'tools' },
     { label: 'Other tools', key: 'other-tools', children: [
-      { href: BASE + 'other-tools/recipe-grid/index.html', label: 'Recipe Grid', key: 'recipe-grid' }
+      { href: BASE + 'other-tools/recipe-grid/', label: 'Recipe Grid', key: 'recipe-grid' }
     ] }
   ];
 
@@ -79,7 +79,7 @@
 
   header.innerHTML =
     '<div class="header-inner">' +
-      '<a class="brand" href="' + BASE + 'index.html" aria-label="Karl Krecke home">' + LOGO +
+      '<a class="brand" href="' + (BASE || './') + '" aria-label="Karl Krecke home">' + LOGO +
         '<span class="brand-text">Karl Krecke</span>' +
       '</a>' +
       '<nav class="site-nav" aria-label="Primary"><div class="nav-links">' + links + '</div></nav>' +
