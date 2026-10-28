@@ -78,6 +78,7 @@ const SCHEMA = {
 
 const SYSTEM = `You convert recipes into clean, structured data.
 Rules:
+- Always answer by calling the save_recipe tool exactly once. Do not reply with plain text.
 - Only use what is in the source. Do not invent ingredients, quantities, or times. Leave unknown fields empty.
 - Strip blog stories, ads, and comments.
 - Every ingredient gets an id. Every step lists the ids of the ingredients it uses.
@@ -165,7 +166,7 @@ module.exports = async (req, res) => {
         max_tokens: 4096,
         system: SYSTEM,
         tools: [{ name: 'save_recipe', description: 'Save the structured recipe.', input_schema: SCHEMA }],
-        tool_choice: { type: 'tool', name: 'save_recipe' },
+        tool_choice: { type: 'auto' },
         messages: [{ role: 'user', content }]
       }),
       signal: AbortSignal.timeout(55000)
