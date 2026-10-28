@@ -175,6 +175,33 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
 
   var SAMPLE = "Simple Garlic Butter Pasta\nServes 2. 20 minutes.\n\n8 oz spaghetti\n3 tbsp butter\n4 cloves garlic, minced\n1/4 tsp red pepper flakes\n1/2 cup grated parmesan\n2 tbsp chopped parsley\nSalt\n\n1. Boil the spaghetti in well-salted water until al dente. Save 1/2 cup pasta water, then drain.\n2. Melt the butter in a large skillet over medium heat. Add garlic and red pepper flakes and cook 1 minute.\n3. Add the pasta and a splash of pasta water. Toss until glossy.\n4. Off the heat, stir in parmesan and parsley. Season with salt and serve.";
 
+  /* ---- PostHog events ----
+     Never send recipe text, photos, or full links: only the link's domain. */
+  function track(event, props) {
+    try { if (window.posthog && posthog.capture) posthog.capture(event, props || {}); } catch (e) {}
+  }
+  var INPUT_TYPES = { url: 'link', text: 'text', image: 'photo' };
+  var inputTracked = {}, itemChecked = false;
+  // recipe_input_added: once per input type per visit, not on every keystroke.
+  function inputAdded(m, extra) {
+    if (inputTracked[m]) return;
+    inputTracked[m] = true;
+    track('recipe_input_added', Object.assign({ input_type: INPUT_TYPES[m] }, extra || {}));
+  }
+  function linkDomain(raw) {
+    try { return new URL(raw).hostname.replace(/^www\./, ''); } catch (e) { return undefined; }
+  }
+  function errorType(httpStatus, m) {
+    if (!httpStatus) return 'network_error';
+    if (httpStatus === 429) return 'rate_limited';
+    if (httpStatus === 422) return 'not_convertible';
+    if (httpStatus === 400) return m === 'url' ? 'link_failed' : 'invalid_input';
+    if (httpStatus === 503) return 'not_configured';
+    return 'server_error';
+  }
+  $('rgUrl').addEventListener('input', function () { if ($('rgUrl').value.trim()) inputAdded('url'); });
+  $('rgText').addEventListener('input', function () { if ($('rgText').value.trim()) inputAdded('text'); });
+
   document.querySelectorAll('.rg-tab').forEach(function (t) {
     t.addEventListener('click', function () { setMode(t.dataset.mode); });
   });
@@ -204,6 +231,7 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
     var files = [].slice.call(list).filter(function (f) { return /^image\//.test(f.type); }).slice(0, 4 - images.length);
     Promise.all(files.map(shrink)).then(function (urls) {
       images = images.concat(urls).slice(0, 4);
+      if (urls.length) inputAdded('image', { photo_count: images.length });
       $('rgThumbs').innerHTML = images.map(function (u) { return '<img src="' + u + '" alt="">'; }).join('');
     });
   }
@@ -213,7 +241,10 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
   ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('drag'); }); });
   drop.addEventListener('drop', function (e) { addFiles(e.dataTransfer.files); });
 
-  $('rgSample').addEventListener('click', function () { setMode('text'); $('rgText').value = SAMPLE; });
+  $('rgSample').addEventListener('click', function () {
+    setMode('text'); $('rgText').value = SAMPLE;
+    track('recipe_sample_used');
+  });
 
   $('rgForm').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -223,15 +254,33 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
     if (mode === 'image') body.images = images;
     $('rgGo').disabled = true;
     setStatus('Reading the recipe… this usually takes 10–20 seconds.');
+
+    var runMode = mode, started = Date.now(), httpStatus = 0;
+    var props = { input_type: INPUT_TYPES[runMode], is_sample: runMode === 'text' && body.text === SAMPLE };
+    if (runMode === 'url') props.source_domain = linkDomain(body.url);
+    if (runMode === 'image') props.photo_count = images.length;
+    track('recipe_format_started', props);
+
     fetch('/api/convert', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-      .then(function (r) { return r.json().catch(function () { return { error: 'Unexpected response (' + r.status + ').' }; }); })
+      .then(function (r) { httpStatus = r.status; return r.json().catch(function () { return { error: 'Unexpected response (' + r.status + ').' }; }); })
       .then(function (d) {
         if (d.error) throw new Error(d.error);
         setStatus('');
         render(d.recipe);
-        if (window.posthog) posthog.capture('recipe_grid_converted', { mode: mode });
+        track('recipe_format_completed', Object.assign({}, props, {
+          duration_ms: Date.now() - started,
+          ingredient_count: (d.recipe.ingredients || []).length,
+          step_count: (d.recipe.steps || []).length
+        }));
       })
-      .catch(function (err) { setStatus(err.message, true); })
+      .catch(function (err) {
+        setStatus(err.message, true);
+        track('recipe_format_failed', Object.assign({}, props, {
+          error_type: errorType(httpStatus, runMode),
+          http_status: httpStatus || undefined,
+          duration_ms: Date.now() - started
+        }));
+      })
       .then(function () { $('rgGo').disabled = false; });
   });
   function setStatus(msg, err) { status.textContent = msg; status.classList.toggle('err', !!err); }
@@ -295,7 +344,10 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
     if ((last.mise_en_place || []).length) t.push('MISE EN PLACE', last.mise_en_place.map(function (m) { return '- ' + m; }).join('\n'), '');
     t.push('INGREDIENTS', (last.ingredients || []).map(function (i) { return '- ' + [qty(i), i.name].filter(Boolean).join(' ') + (i.prep ? ', ' + i.prep : ''); }).join('\n'), '');
     t.push('STEPS', (last.steps || []).map(function (s, n) { return (n + 1) + '. ' + s.text; }).join('\n'));
-    navigator.clipboard.writeText(t.join('\n')).then(function () { setStatus('Copied.'); });
+    navigator.clipboard.writeText(t.join('\n')).then(function () {
+      setStatus('Copied.');
+      track('recipe_exported', { method: 'copy' });
+    });
   });
   $('rgJson').addEventListener('click', function () {
     if (!last) return;
@@ -303,6 +355,18 @@ posthog.init('phc_qNrNa7gfWhdNXAkpo3mnKZe4uG5daH2KD9GBcKYDfSq5', { api_host: 'ht
     a.href = URL.createObjectURL(new Blob([JSON.stringify(last, null, 2)], { type: 'application/json' }));
     a.download = (last.title || 'recipe').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.json';
     a.click();
+    track('recipe_exported', { method: 'json' });
+  });
+  // Covers the Print button and the browser's own print command.
+  window.addEventListener('beforeprint', function () {
+    if (last) track('recipe_exported', { method: 'print' });
+  });
+
+  // recipe_item_checked: someone is cooking along. Once per visit.
+  $('rgOut').addEventListener('change', function (e) {
+    if (itemChecked || !e.target.classList.contains('rg-check') || !e.target.checked) return;
+    itemChecked = true;
+    track('recipe_item_checked', { list: e.target.closest('#rgMise') ? 'mise_en_place' : 'ingredients' });
   });
 })();
 </script>
