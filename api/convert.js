@@ -5,11 +5,11 @@
 // Required Vercel environment variable:
 //   ANTHROPIC_API_KEY - Anthropic API key
 // Optional:
-//   ANTHROPIC_MODEL   - defaults to claude-sonnet-4-5
+//   ANTHROPIC_MODEL   - defaults to claude-sonnet-5-5
 //   RECIPE_RATE_LIMIT - requests per IP per hour, defaults to 10
 
 const API_KEY = process.env.ANTHROPIC_API_KEY;
-const MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5';
+const MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5';
 const LIMIT = parseInt(process.env.RECIPE_RATE_LIMIT || '10', 10);
 const WINDOW_MS = 60 * 60 * 1000;
 const MAX_TEXT = 40000;
