@@ -119,7 +119,7 @@
   footer.innerHTML =
     '<div class="footer-inner">' +
       '<div class="footer-brand">' + LOGO + '<span>Karl Krecke</span></div>' +
-      '<p class="footer-tag">RevOps nerd. Recovering biochemist.</p>' +
+      '<p class="footer-tag">Operations nerd. Recovering biochemist.</p>' +
       '<div class="footer-links">' +
         '<a href="mailto:krecke.karl@gmail.com">Email</a>' +
         '<a href="https://www.linkedin.com/in/karl-krecke-479206132/" target="_blank" rel="noopener">LinkedIn</a>' +
