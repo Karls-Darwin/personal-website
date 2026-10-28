@@ -8,6 +8,12 @@
 //   ANTHROPIC_MODEL   - defaults to claude-sonnet-5-5
 //   RECIPE_RATE_LIMIT - requests per IP per hour, defaults to 10
 
+const { reportError } = require('./_posthog');
+
+// Errors caused by the visitor's input (bad link, blocked page). These are
+// shown to the visitor but not sent to Error Tracking.
+function userError(msg) { const e = new Error(msg); e.expected = true; return e; }
+
 const API_KEY = process.env.ANTHROPIC_API_KEY;
 const MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5';
 const LIMIT = parseInt(process.env.RECIPE_RATE_LIMIT || '10', 10);
@@ -95,15 +101,15 @@ function htmlToText(html) {
 
 async function fetchRecipePage(url) {
   let u;
-  try { u = new URL(url); } catch (e) { throw new Error('That URL doesn\'t look right.'); }
-  if (!/^https?:$/.test(u.protocol)) throw new Error('Only http and https links work.');
-  if (/^(localhost|127\.|10\.|192\.168\.|169\.254\.|0\.)/.test(u.hostname)) throw new Error('That URL isn\'t allowed.');
+  try { u = new URL(url); } catch (e) { throw userError('That URL doesn\'t look right.'); }
+  if (!/^https?:$/.test(u.protocol)) throw userError('Only http and https links work.');
+  if (/^(localhost|127\.|10\.|192\.168\.|169\.254\.|0\.)/.test(u.hostname)) throw userError('That URL isn\'t allowed.');
   const r = await fetch(u.toString(), {
     headers: { 'User-Agent': 'Mozilla/5.0 (RecipeGrid; +https://karlkrecke.com/other-tools/recipe-grid/)' },
     redirect: 'follow',
     signal: AbortSignal.timeout(10000)
   });
-  if (!r.ok) throw new Error(`Couldn't open that page (status ${r.status}). Try pasting the text instead.`);
+  if (!r.ok) throw userError(`Couldn't open that page (status ${r.status}). Try pasting the text instead.`);
   return htmlToText(await r.text());
 }
 
@@ -113,7 +119,10 @@ module.exports = async (req, res) => {
   const send = (code, obj) => res.status(code).end(JSON.stringify(obj));
 
   if (req.method !== 'POST') return send(405, { error: 'Use POST.' });
-  if (!API_KEY) return send(503, { error: 'The tool isn\'t configured yet.' });
+  if (!API_KEY) {
+    await reportError(new Error('ANTHROPIC_API_KEY is not set'), 'api/convert');
+    return send(503, { error: 'The tool isn\'t configured yet.' });
+  }
 
   const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
   if (rateLimited(ip)) return send(429, { error: `Limit is ${LIMIT} conversions per hour. Try again later.` });
@@ -162,14 +171,20 @@ module.exports = async (req, res) => {
       signal: AbortSignal.timeout(55000)
     });
     if (!r.ok) {
-      console.error('Anthropic error', r.status, await r.text());
+      const detail = await r.text();
+      console.error('Anthropic error', r.status, detail);
+      await reportError(new Error('Anthropic API error ' + r.status + ': ' + detail.slice(0, 300)), 'api/convert', { status: r.status, model: MODEL });
       return send(502, { error: 'The recipe model had a problem. Try again in a minute.' });
     }
     const data = await r.json();
     const block = (data.content || []).find((b) => b.type === 'tool_use');
-    if (!block) return send(502, { error: 'Couldn\'t read a recipe from that.' });
+    if (!block) {
+      await reportError(new Error('Anthropic response had no tool_use block'), 'api/convert', { model: MODEL });
+      return send(502, { error: 'Couldn\'t read a recipe from that.' });
+    }
     return send(200, { recipe: block.input });
   } catch (err) {
+    if (!err.expected) await reportError(err, 'api/convert');
     return send(400, { error: err.message || 'Something went wrong.' });
   }
 };
