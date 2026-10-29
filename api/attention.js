@@ -45,11 +45,36 @@ const CACHE_MS = 6 * 60 * 60 * 1000; // 6 hours
 
 const { reportError } = require('./_posthog');
 
+function runQuery() {
+  return fetch(HOST + '/api/projects/' + PROJECT_ID + '/query/', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + API_KEY,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ query: { kind: 'HogQLQuery', query: QUERY } })
+  });
+}
+
+// On failure, serve the last good results if this instance has them, with a
+// short CDN cache so the query runs again soon. Never let the CDN cache the
+// empty state, or one upstream timeout hides the widget for hours.
+function sendFailure(res, reason) {
+  if (cache.data) {
+    res.setHeader('Cache-Control', 'public, s-maxage=300');
+    res.status(200).end(JSON.stringify(cache.data));
+    return;
+  }
+  res.setHeader('Cache-Control', 'no-store');
+  res.status(200).end(JSON.stringify({ ready: false, reason: reason }));
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'public, s-maxage=21600, stale-while-revalidate=86400');
   res.setHeader('Content-Type', 'application/json');
 
   if (!API_KEY || !PROJECT_ID) {
+    res.setHeader('Cache-Control', 'no-store');
     res.status(200).end(JSON.stringify({ ready: false, reason: 'not_configured' }));
     return;
   }
@@ -60,19 +85,17 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const r = await fetch(HOST + '/api/projects/' + PROJECT_ID + '/query/', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + API_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ query: { kind: 'HogQLQuery', query: QUERY } })
-    });
+    let r = await runQuery();
+
+    // A 5xx from the query API can be a short upstream timeout: retry once.
+    if (r.status >= 500) {
+      await new Promise(function (resolve) { setTimeout(resolve, 1000); });
+      r = await runQuery();
+    }
 
     if (!r.ok) {
-
       await reportError(new Error('PostHog query failed with status ' + r.status), 'api/attention', { status: r.status });
-      res.status(200).end(JSON.stringify({ ready: false, reason: 'query_failed' }));
+      sendFailure(res, 'query_failed');
       return;
     }
 
@@ -100,6 +123,6 @@ module.exports = async (req, res) => {
     res.status(200).end(JSON.stringify(payload));
   } catch (err) {
     await reportError(err, 'api/attention');
-    res.status(200).end(JSON.stringify({ ready: false, reason: 'error' }));
+    sendFailure(res, 'error');
   }
 };
