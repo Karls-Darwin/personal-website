@@ -74,8 +74,7 @@ module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
   if (!API_KEY || !PROJECT_ID) {
-    res.setHeader('Cache-Control', 'no-store');
-    res.status(200).end(JSON.stringify({ ready: false, reason: 'not_configured' }));
+    sendFailure(res, 'not_configured');
     return;
   }
 
